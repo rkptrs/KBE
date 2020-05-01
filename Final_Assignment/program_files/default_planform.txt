@@ -8,6 +8,7 @@ sweep = 25
 dihedral = 5
 front_spar = 0.2
 rear_spar = 0.7
+outer_flap_limit = 0.7	# y/(b/2)
 fuselage_radius = 1.5
 airfoil_name = ex2
 flap_type = Plain

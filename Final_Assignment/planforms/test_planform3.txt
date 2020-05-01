@@ -8,6 +8,7 @@ sweep = 55
 dihedral = 7
 front_spar = 0.2
 rear_spar = 0.7
+outer_flap_limit = 0.7	# y/(b/2)
 fuselage_radius = 2
 airfoil_name = ex4
 flap_type = Slotted

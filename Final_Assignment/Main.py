@@ -34,7 +34,6 @@ class Model(Base):
 
     flap_deflection = Input(35)
     flap_hinge_location = Input(0.67)
-    outer_flap_lim = Input(0.7)
 
     # This is a good place for your code come and define the three inputs above. All of the inputs you need
     # should be in the input attribute (self.input.wing_span, self.input.root_chord etc.), you can file all the
@@ -46,7 +45,7 @@ class Model(Base):
 
     @Part
     def wing(self):
-        return Wing(input=self.input, flap_hinge_location=self.flap_hinge_location, outer_flap_lim=self.outer_flap_lim,
+        return Wing(input=self.input, flap_hinge_location=self.flap_hinge_location,
                     color=self.input.colour, flap_deflection=self.flap_deflection)
 
 
@@ -68,7 +67,6 @@ class Wing(Base):
 
     flap_deflection = Input(settable=False)
     flap_hinge_location = Input(settable=False)
-    outer_flap_lim = Input(settable=False)
     input = Input(settable=False)
 
     @Attribute
@@ -131,15 +129,15 @@ class Wing(Base):
 
     @Part
     def section_flap2(self):
-        return self.flap_function(chords=[self.chord(self.input.kink_position+self.input.flap_gap), self.chord(self.outer_flap_lim*self.input.wing_span)],
-                                  points=[self.le_pos(self.input.kink_position+self.input.flap_gap), self.le_pos(self.outer_flap_lim*self.input.wing_span)],
+        return self.flap_function(chords=[self.chord(self.input.kink_position+self.input.flap_gap), self.chord(self.input.outer_flap_lim*self.input.wing_span)],
+                                  points=[self.le_pos(self.input.kink_position+self.input.flap_gap), self.le_pos(self.input.outer_flap_lim*self.input.wing_span)],
                                   airfoil_coordinates=self.input.airfoil_coordinates,
                                   flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
 
     @Part
     def section_outer(self):
-        return Wing_section(chords=[self.chord(self.outer_flap_lim*self.input.wing_span), self.tip_chord],
-                            points=[self.le_pos(self.outer_flap_lim*self.input.wing_span), self.le_pos(self.input.wing_span)],
+        return Wing_section(chords=[self.chord(self.input.outer_flap_lim*self.input.wing_span), self.tip_chord],
+                            points=[self.le_pos(self.input.outer_flap_lim*self.input.wing_span), self.le_pos(self.input.wing_span)],
                             airfoil_coordinates=self.input.airfoil_coordinates, hidden=False)
 
     @Part

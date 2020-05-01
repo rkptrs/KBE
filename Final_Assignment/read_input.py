@@ -44,6 +44,7 @@ class get_input:
         self.dihedral_deg = get_line(f)
         self.front_spar = get_line(f)
         self.rear_spar = get_line(f)
+        self.outer_flap_lim = get_line(f)
         self.fuselage_radius = get_line(f)
 
         self.airfoil_name = get_line(f, number=False)
@@ -82,6 +83,10 @@ def check_input(out, name):
         warnings.warn("The wing contains less than 1 m of span available for HLDs which is not allowed.")
     if len(out.airfoil_coordinates) < 50:
         warnings.warn("Airfoil coordinates file does not contain at least 50 points which is the minimum required amount.")
+        out.valid = False
+    if out.wing_span*out.outer_flap_lim < out.kink_position + out.flap_gap + 0.5:
+        warnings.warn("Specified outer flap limit is too close to the kink")
+        out.valid = False
 
     if not out.valid:
         out = get_input("program_files/default_planform.txt")
