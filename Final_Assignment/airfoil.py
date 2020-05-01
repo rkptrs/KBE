@@ -70,6 +70,7 @@ def get_airfoil(name):
 
         if yb[-1] != yt[-1]:
             yb[-1] = yt[-1]
+        f.close()
         return list(reversed(xb))+xt, list(reversed(yb))+yt
 
     elif mode == "reversed":
@@ -90,6 +91,7 @@ def get_airfoil(name):
             line = f.readline()
         if y_list[0] != y_list[-1]:
             y_list[-1] = y_list[0] = y_list[0]/2 + y_list[-1]/2
+        f.close()
         return list(reversed(x_list)), list(reversed(y_list))
 
 

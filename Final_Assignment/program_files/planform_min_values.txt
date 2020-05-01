@@ -1,0 +1,13 @@
+wing_span = 2
+root_chord = 1
+taper_inner = 0.5
+taper_outer = 0.2
+kink_position = 1
+flap_gap = 0.2
+sweep = -20
+dihedral = -15
+front_spar = 0.05
+rear_spar = 0.5
+fuselage_radius = 0.5
+airfoil_name = ex1
+flap_type = None

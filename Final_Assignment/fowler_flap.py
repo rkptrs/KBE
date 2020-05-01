@@ -2,11 +2,10 @@ from parapy.geom import *
 from parapy.core import *
 from functions import p2v, v2p, interp_coords, split_coordinates, hinge_position
 from wing_section import Wing_base
-from slat import Slat
 import numpy as np
 
 
-class Flower_flap_section(Wing_base):
+class Fowler_flap_section(Wing_base):
 
     @Attribute
     def hinge_points(self):

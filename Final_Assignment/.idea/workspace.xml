@@ -23,7 +23,12 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/First.py" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Tomáš\Desktop\Aerospace engineering\MSC\KBE\Final_Assignment" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.Main">
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
@@ -39,7 +44,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\Tomáš\Desktop\Aerospace engineering\MSC\KBE\Final_Assignment\Main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -70,20 +75,42 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="exe_17_wing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="hld_sizing" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Aircraft exercise" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/AppData/Local/Temp/Rar$DIa0.041" />
+      <option name="SDK_HOME" value="C:\Python37\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/AppData/Local/Temp/Rar$DIa0.041/exe_17_wing.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\Tomáš\Desktop\Aerospace engineering\MSC\KBE\Final_Assignment\hld_sizing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="read_input" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="Aircraft exercise" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Python37\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/read_input.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -115,16 +142,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.test" />
       <item itemvalue="Python.Main" />
+      <item itemvalue="Python.test" />
+      <item itemvalue="Python.read_input" />
       <item itemvalue="Python.airfoil" />
-      <item itemvalue="Python.exe_17_wing" />
+      <item itemvalue="Python.hld_sizing" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.exe_17_wing" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -147,7 +170,10 @@
       <workItem from="1586874544614" duration="7042000" />
       <workItem from="1586885469836" duration="5110000" />
       <workItem from="1586935887361" duration="10032000" />
-      <workItem from="1587024794726" duration="315000" />
+      <workItem from="1587024794726" duration="1077000" />
+      <workItem from="1588066928907" duration="25736000" />
+      <workItem from="1588146724489" duration="9413000" />
+      <workItem from="1588338345391" duration="3254000" />
     </task>
     <servers />
   </component>
@@ -155,40 +181,52 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586858222127">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588149440105">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1586858222127" />
-    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1586858220806">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1588149440105" />
+    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1588149438495">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1586858220806" />
-    <state width="1493" height="200" key="GridCell.Tab.0.bottom" timestamp="1587025106287">
+    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1588149438495" />
+    <state width="1493" height="104" key="GridCell.Tab.0.bottom" timestamp="1588341612787">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="200" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587025106287" />
-    <state width="1493" height="200" key="GridCell.Tab.0.center" timestamp="1587025106286">
+    <state width="1493" height="104" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588341612787" />
+    <state width="1493" height="104" key="GridCell.Tab.0.center" timestamp="1588341612787">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="200" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587025106286" />
-    <state width="1493" height="200" key="GridCell.Tab.0.left" timestamp="1587025106285">
+    <state width="1493" height="104" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588341612787" />
+    <state width="1493" height="104" key="GridCell.Tab.0.left" timestamp="1588341612787">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="200" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587025106285" />
-    <state width="1493" height="200" key="GridCell.Tab.0.right" timestamp="1587025106287">
+    <state width="1493" height="104" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588341612787" />
+    <state width="1493" height="104" key="GridCell.Tab.0.right" timestamp="1588341612787">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="200" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587025106287" />
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1587024796610">
+    <state width="1493" height="104" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588341612787" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1588338348867">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1587024796610" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1588338348867" />
+    <state x="105" y="72" key="refactoring.ChangeSignatureDialog" timestamp="1588084192089">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="105" y="72" key="refactoring.ChangeSignatureDialog/0.0.1536.824@0.0.1536.824" timestamp="1588084192089" />
+    <state x="105" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1588099930324">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="105" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1588099930324" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Aircraft_exercise$exe_17_wing.coverage" NAME="exe_17_wing Coverage Results" MODIFIED="1586251465150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/AppData/Local/Temp/Rar$DIa0.041" />
     <SUITE FILE_PATH="coverage/Aircraft_exercise$airfoil.coverage" NAME="airfoil Coverage Results" MODIFIED="1586855832911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Aircraft_exercise$Aircraft_exercise.coverage" NAME="Main Coverage Results" MODIFIED="1586625372318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$First.coverage" NAME="First Coverage Results" MODIFIED="1588149585804" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$read_input.coverage" NAME="read_input Coverage Results" MODIFIED="1588078221974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$Main2.coverage" NAME="Main Coverage Results" MODIFIED="1588100445463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Aircraft_exercise$Main.coverage" NAME="Main Coverage Results" MODIFIED="1586874374957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Final_Assignment$Main.coverage" NAME="Main Coverage Results" MODIFIED="1587025106265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$section.coverage" NAME="section Coverage Results" MODIFIED="1588149223852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Documents/GitHub/KBE/KBEassignment/aircraft" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$Main.coverage" NAME="Main Coverage Results" MODIFIED="1588341602373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

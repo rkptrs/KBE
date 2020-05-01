@@ -1,0 +1,13 @@
+wing_span = 12
+root_chord = 5
+taper_inner = 0.9
+taper_outer = 0.2
+kink_position = 6
+flap_gap = 0.5
+sweep = -10
+dihedral = -5
+front_spar = 0.2
+rear_spar = 0.7
+fuselage_radius = 1.5
+airfoil_name = ex5
+flap_type = Slotted

@@ -11,11 +11,11 @@ class Wing_base(Base):
     flap_hinge_location = Input(0.67, settable=False)
     flap_deflection = Input(0, settable=False)
 
-    @Attribute
+    @Attribute                  # Interpolation of airfoil coordinates
     def unit_airfoil(self):
         return FittedCurve(self.airfoil_coordinates)
 
-    @Attribute
+    @Attribute                  # Returns root and tip airfoil of the given wing section
     def airfoils(self):
         out = [0, 0]
         for i in range(2):
@@ -23,11 +23,12 @@ class Wing_base(Base):
             out[i] = TranslatedCurve(scaled_airfoil, p2v(self.points[i]))
         return out
 
-    @Attribute
+    @Attribute                  # Returns the wing solid constructed from the two airfoils
     def wing_solid(self):
-        #return RuledSolid(self.airfoils[0], self.airfoils[1])
         return LoftedSolid([self.airfoils[0], self.airfoils[1]])
 
+    # The height of the airfoil at hinge location and z coordinate of center of hinge computed by
+    # interpolating airfoil coordinates
     @Attribute
     def hinge_dimension(self):
         xb, zb, xt, zt = split_coordinates(self.airfoil_coordinates)
@@ -35,13 +36,13 @@ class Wing_base(Base):
         z_top = interp_coords(xt, zt, self.flap_hinge_location)
         return (z_top + z_bottom) / 2, (z_top - z_bottom)*1.01
 
-    @Attribute
+    @Attribute                  # Returns the sweep of the hinge line of flaps
     def flap_sweep(self):
         dx = (1-self.flap_hinge_location)*(self.chords[1]-self.chords[0]) + self.points[1][0] - self.points[0][1]
         return np.arctan(dx/(self.points[1][1]-self.points[0][1]))
 
 
-class Wing_section(Wing_base):
+class Wing_section(Wing_base):  # This is a wing section without flaps
     @Part
     def main_wing(self):
         return Solid(self.wing_solid.solids[0])

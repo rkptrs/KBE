@@ -1,0 +1,13 @@
+wing_span = 12 		# in meters
+root_chord = 5		# in meters
+taper_inner = 0.7
+taper_outer = 0.5
+kink_position = 4
+flap_gap = 0.5		# in meters
+sweep = 25		# degreed
+dihedral = 5		# degrees
+front_spar = 0.2	
+rear_spar = 0.7
+fuselage_radius = 1.5	# in meters
+airfoil_name = ex1	# file in airfoils folder
+flap_type = Fowler	# selecto out of Fowler, Plain, Slotted
