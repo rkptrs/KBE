@@ -10,6 +10,8 @@ from hld_size import HLDsize
 from avl_wing import Avl_Wing
 from avl_wing import Avl_analysis
 from xfoil_analysis import XfoilAnalysis
+from bar import bar
+from write_pdf import write_pdf
 import numpy as np
 
 
@@ -35,7 +37,6 @@ class Model(Base):
         if out.valid:
             out = check_input(out, self.planform_file_name)
         return out
-
 
     @Attribute
     def flap_hinge_location(self):
@@ -64,7 +65,8 @@ class Model(Base):
     @Attribute
     def xfoil(self):
         clmaxfoil = np.zeros(20)
-
+        p_bar = bar()
+        p_bar.update(0)
         for j in range(20):
             y = j/20 * self.input.wing_span
             if y < self.input.kink_position:
@@ -82,7 +84,9 @@ class Model(Base):
                                            mach=self.mach)
 
             clmaxfoil[j] = xfoil_analysis.clmax
-
+            p_bar.update(j*5)
+        p_bar.update(100)
+        p_bar.kill()
         return clmaxfoil
 
     @Attribute
@@ -198,6 +202,12 @@ class Model(Base):
     def mirror(self):
         return MirroredShape(self.wing_parts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
                              quantify=len(self.wing_parts)-1, color=self.input.colour)
+
+    @Attribute
+    def export_pdf(self):
+        write_pdf(self.input, self.clmax[0], self.input.clmax - self.clmax[0], self.flap_hinge_location)
+        return "Done"
+
 
 
 class Wing(Base):

@@ -70,7 +70,7 @@ def check_input(out, name):
     minimum = get_input("program_files/planform_min_values.txt")
     maximum = get_input("program_files/planform_max_values.txt")
     parameters = list(out.__dict__.keys())
-    for parm in parameters[0:parameters.index("fuselage_radius")+1]:
+    for parm in parameters[0:parameters.index("speed")+1]:
         if not minimum.__getattribute__(parm) <= out.__getattribute__(parm) <= maximum.__getattribute__(parm):
             out.valid = False
             warnings.warn("Input parameter " + parm + " as specified in '" + name +
