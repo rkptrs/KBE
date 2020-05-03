@@ -46,9 +46,12 @@ class get_input:
         self.rear_spar = get_line(f)
         self.outer_flap_lim = get_line(f)
         self.fuselage_radius = get_line(f)
-
+        self.clmax = get_line(f)
+        self.twist = get_line(f)
+        self.speed = get_line(f)
         self.airfoil_name = get_line(f, number=False)
         self.flap_type = get_line(f, number=False)
+
 
         if exception:
             self.colour = "red"
