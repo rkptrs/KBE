@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a762d391-f63a-4a36-a0fb-690175a9bc3a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Tomá.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Tomá.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/avl_section.py" beforeDir="false" afterPath="$PROJECT_DIR$/avl_section.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/avl_wing.py" beforeDir="false" afterPath="$PROJECT_DIR$/avl_wing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fowler_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/fowler_flap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_out/test_planform1_2020-05-04.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_out/test_planform1_2020-05-04.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plain_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/plain_flap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planforms/test_planform1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/planforms/test_planform1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/slotted_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/slotted_flap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wing_section.py" beforeDir="false" afterPath="$PROJECT_DIR$/wing_section.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,9 +105,9 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.write_pdf" />
-      <item itemvalue="Python.bar" />
       <item itemvalue="Python.Main" />
+      <item itemvalue="Python.bar" />
+      <item itemvalue="Python.write_pdf" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -150,7 +139,7 @@
       <workItem from="1588348933265" duration="72000" />
       <workItem from="1588494200943" duration="16913000" />
       <workItem from="1588580600154" duration="13436000" />
-      <workItem from="1588597807556" duration="7226000" />
+      <workItem from="1588597807556" duration="8177000" />
     </task>
     <servers />
   </component>
