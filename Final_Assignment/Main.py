@@ -205,7 +205,8 @@ class Model(Base):
 
     @Attribute
     def export_pdf(self):
-        write_pdf(self.input, self.clmax[0], self.input.clmax - self.clmax[0], self.flap_hinge_location)
+        write_pdf(self.input, self.clmax[0], self.input.clmax - self.clmax[0], self.flap_hinge_location,
+                  self.planform_file_name)
         return "Done"
 
 

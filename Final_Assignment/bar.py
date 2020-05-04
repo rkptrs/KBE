@@ -20,10 +20,3 @@ class bar:
     def kill(self):
         self.parent.withdraw()
 
-
-from parapy.lib.xfoil import *
-import numpy as np
-import matplotlib.pyplot as plt
-from kbeutils.geom.curve import airfoil_points_in_xy_plane
-
-
