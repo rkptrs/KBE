@@ -1,0 +1,25 @@
+To suppress the plotting of CP plots in XFOIL:
+
+Open .\Python37\Lib\site-packages\parapy\lib\xfoil\main.py
+
+on line 166, below:
+"if norm:"
+        "write("NORM")"
+
+write:
+
+"write('PLOP')"
+"write('G')"
+"write()"
+
+
+So it should look like:
+
+    if norm:
+        write("NORM")
+    write('PLOP')
+    write('G')
+    write()
+    # Generate NACA or load from file
+    if builtin_naca:
+        write(airfoil)
