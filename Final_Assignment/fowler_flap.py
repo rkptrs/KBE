@@ -22,7 +22,7 @@ class Fowler_flap_section(Wing_base):
         for i in range(2):
             position = hinge_position(self.hinge_points[i])
             circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4, angle=3*np.pi/2, position=position,
-                             start=self.hinge_points[i] + Vector(0, 0, 1))
+                             start=self.hinge_points[i] + Vector(0, 0, 1), mesh_deflection=0.00001)
         return circles
 
     @Attribute
@@ -38,25 +38,25 @@ class Fowler_flap_section(Wing_base):
             points_list_2.append(Point(x_locations[i], 0, (z_top+z_bottom)/2+margin))
         lines_1, lines_2 = [], []
         for i in range(2):
-            lines_1.append(FittedCurve(np.array(points_list_1)*self.chords[i]+p2v(self.points[i])))
-            lines_2.append(FittedCurve(np.array(points_list_2) * self.chords[i] + p2v(self.points[i])))
+            lines_1.append(FittedCurve(np.array(points_list_1)*self.chords[i]+p2v(self.points[i]), mesh_deflection=0.00001))
+            lines_2.append(FittedCurve(np.array(points_list_2) * self.chords[i] + p2v(self.points[i]), mesh_deflection=0.00001))
         return lines_1, lines_2
 
     @Attribute
     def flap_split_surface(self):
         composed_1, composed_2 = [0, 0], [0, 0]
         for i in range(2):
-            composed_1[i] = Wire([self.camber_line[0][i], self.flap_split_circles[i]]).compose()
-            composed_2[i] = Wire([self.camber_line[1][i], self.flap_split_circles[i]]).compose()
-        return RuledSurface(composed_1[0], composed_1[1]), RuledSurface(composed_2[0], composed_2[1])
+            composed_1[i] = Wire([self.camber_line[0][i], self.flap_split_circles[i]], mesh_deflection=0.00001).compose()
+            composed_2[i] = Wire([self.camber_line[1][i], self.flap_split_circles[i]], mesh_deflection=0.00001).compose()
+        return RuledSurface(composed_1[0], composed_1[1], mesh_deflection=0.00001), RuledSurface(composed_2[0], composed_2[1], mesh_deflection=0.00001)
 
     @Attribute
     def split_wing(self):       # Split wing along flap split surface
-        parts = SplitSolid(self.wing_solid, self.flap_split_surface[0]).solids
+        parts = SplitSolid(self.wing_solid, self.flap_split_surface[0], mesh_deflection=0.00001).solids
         if len(parts) > 1:
             return parts, "Yellow"
         else:
-            parts = SplitSolid(self.wing_solid, self.flap_split_surface[1]).solids
+            parts = SplitSolid(self.wing_solid, self.flap_split_surface[1], mesh_deflection=0.00001).solids
             return parts, "Red"
 
     @Attribute
@@ -72,7 +72,7 @@ class Fowler_flap_section(Wing_base):
 
     @Part
     def main_wing(self):
-        return Solid(self.wing_parts[0])
+        return Solid(self.wing_parts[0], mesh_deflection=0.00001)
 
     @Attribute
     def flap_displacement(self):  # Defined at average chord
@@ -99,11 +99,11 @@ class Fowler_flap_section(Wing_base):
     def rotated_flap(self):
         deflected_flap = RotatedShape(self.wing_parts[1], self.hinge_points[0],  # Rotate around hinge
                                       p2v(self.hinge_points[0])-p2v(self.hinge_points[1]),
-                                      angle=-self.flap_deflection*np.pi/180)
+                                      angle=-self.flap_deflection*np.pi/180, mesh_deflection=0.00001)
         center_point = v2p(p2v(self.hinge_points[0]) / 2 + p2v(self.hinge_points[1]) / 2)  # Rotation point for corrections
-        deflected_flap = RotatedShape(deflected_flap, center_point, Vector(0, 0, 1), angle=self.z_rot_correction)  # Adjust rotation around z axis
-        return RotatedShape(deflected_flap, center_point, Vector(1, 0, 0), angle=self.x_rot_correction)  # Adjust rotation around x axis
+        deflected_flap = RotatedShape(deflected_flap, center_point, Vector(0, 0, 1), angle=self.z_rot_correction, mesh_deflection=0.00001)  # Adjust rotation around z axis
+        return RotatedShape(deflected_flap, center_point, Vector(1, 0, 0), angle=self.x_rot_correction, mesh_deflection=0.00001)  # Adjust rotation around x axis
 
     @Part
     def flap(self):
-        return TranslatedShape(self.rotated_flap, displacement=self.flap_displacement, color=self.split_wing[1])  #Translate flap backwards
+        return TranslatedShape(self.rotated_flap, displacement=self.flap_displacement, color=self.split_wing[1], mesh_deflection=0.00001)  #Translate flap backwards

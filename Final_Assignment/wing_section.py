@@ -13,19 +13,19 @@ class Wing_base(Base):
 
     @Attribute                  # Interpolation of airfoil coordinates
     def unit_airfoil(self):
-        return FittedCurve(self.airfoil_coordinates)
+        return FittedCurve(self.airfoil_coordinates, mesh_deflection=0.00001)
 
     @Attribute                  # Returns root and tip airfoil of the given wing section
     def airfoils(self):
         out = [0, 0]
         for i in range(2):
-            scaled_airfoil = ScaledCurve(self.unit_airfoil, factor=self.chords[i], reference_point=Point(0, 0, 0))
+            scaled_airfoil = ScaledCurve(self.unit_airfoil, factor=self.chords[i], reference_point=Point(0, 0, 0), mesh_deflection=0.00001)
             out[i] = TranslatedCurve(scaled_airfoil, p2v(self.points[i]))
         return out
 
     @Attribute                  # Returns the wing solid constructed from the two airfoils
     def wing_solid(self):
-        return LoftedSolid([self.airfoils[0], self.airfoils[1]])
+        return LoftedSolid([self.airfoils[0], self.airfoils[1]], mesh_deflection=0.00001)
 
     # The height of the airfoil at hinge location and z coordinate of center of hinge computed by
     # interpolating airfoil coordinates
@@ -45,4 +45,4 @@ class Wing_base(Base):
 class Wing_section(Wing_base):  # This is a wing section without flaps
     @Part
     def main_wing(self):
-        return Solid(self.wing_solid.solids[0])
+        return Solid(self.wing_solid.solids[0], mesh_deflection=0.00001)

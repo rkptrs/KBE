@@ -7,7 +7,6 @@ from avl_section import Section
 import kbeutils.avl as avl
 
 
-
 class Avl_Wing(GeomBase):
     name = Input("wing")
     span = Input()
@@ -20,6 +19,7 @@ class Avl_Wing(GeomBase):
     kink_positionm = Input()
     dihedral_deg = Input()
     mach = Input()
+    airfoil_coordinates = Input()
 
     @Attribute
     def kink_position(self):
@@ -52,17 +52,17 @@ class Avl_Wing(GeomBase):
         tip = self.chord_tip
         return root, kink, tip
 
-
     @Attribute
     def section_positions(self):
         sweep = radians(self.le_sweep)
         root = self.position
         tip = rotate(self.position.translate('x', self.half_span * tan(sweep),'y', self.half_span,'z',tan(radians(self.dihedral_deg))*self.half_span),
-                     'y', self.twist, deg=True)
+                     'y', -self.twist, deg=True)
         kink = rotate(self.position.translate('x', self.kink_position*self.half_span * tan(sweep),'y', self.kink_position*self.half_span,'z',tan(radians(self.dihedral_deg))*self.half_span*self.kink_position),
                      'y', self.kink_position*self.twist, deg=True)
         return root, kink, tip
 
+    """
     @Part
     def root_section(self):
         return Section(airfoil_name=self.airfoil,
@@ -80,6 +80,22 @@ class Avl_Wing(GeomBase):
         return Section(airfoil_name=self.airfoil,
                        chord=self.chords[2],
                        position=self.section_positions[2])
+    """
+    @Attribute
+    def unit_airfoil(self):
+        return FittedCurve(self.airfoil_coordinates, mesh_deflection=0.00001)
+
+    @Part(parse=False)
+    def root_section(self):
+        return Section(chord=self.chords[0], unit_airfoil=self.unit_airfoil, section_positions=self.section_positions[0], twist=0)
+
+    @Part(parse=False)
+    def kink_section(self):
+        return Section(chord=self.chords[1], unit_airfoil=self.unit_airfoil, section_positions=self.section_positions[1], twist=self.kink_position*self.twist)
+
+    @Part(parse=False)
+    def tip_section(self):
+        return Section(chord=self.chords[2], unit_airfoil=self.unit_airfoil, section_positions=self.section_positions[2], twist=self.twist)
 
     @Part
     def surface1(self):
