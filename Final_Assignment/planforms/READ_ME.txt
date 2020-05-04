@@ -7,4 +7,4 @@ Here are instructions on how to write planform files:
 -Dimenstions are in meters, angles are in degrees
 
 -test_planform1.txt is a good example
--test_planform3.txt is full of errors
+-test_planform3.txt contains values outside of limits (for demonstration of error messages)

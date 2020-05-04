@@ -17,7 +17,7 @@ def write_list(pdf, title, position, names, values, units):
         pdf.cell(200, 6, txt=value, ln=1, align='L')
 
 
-def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name):
+def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection):
     pdf = FPDF()
     pdf.add_page()
 
@@ -50,9 +50,9 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
     write_list(pdf, "Input parameters:", (20, list_y), names, values, units)
 
     # Make output list
-    names = ["cl_max_airfoil", "Delta_cl_max", "flap_hinge_location"]
-    values = [round(cl_max_airfoil, 3), round(Delta_cl_max, 3), round(flap_hinge_location, 3)]
-    units = ["", "", ""]
+    names = ["Cl_max of airfoil", "Delta Cl_max", "Flap hinge location", "Flap deflection"]
+    values = [round(cl_max_airfoil, 3), round(Delta_cl_max, 3), round(flap_hinge_location, 3), round(flap_deflection, 3)]
+    units = ["", "", "x/c", "deg"]
     write_list(pdf, "Output parameters:", (110, list_y), names, values, units)
 
     pdf.output("pdf_out/"+planform_file_name+"_"+str(datetime.datetime.today())[:10]+".pdf")
@@ -60,4 +60,4 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
 
 if __name__ == "__main__":
     inp = get_input("planforms/test_planform1.txt")
-    write_pdf(inp, 1.2, 0.8, 0.5, "Test run")
+    write_pdf(inp, 1.2, 0.8, 0.5, "Test run", 45)

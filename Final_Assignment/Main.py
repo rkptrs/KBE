@@ -46,15 +46,6 @@ class Model(Base):
     def flap_deflection(self):
         return self.hld_size.angle_max
 
-    # This is a good place for your code come and define the three inputs above. All of the inputs you need
-    # should be in the input attribute (self.input.wing_span, self.input.root_chord etc.), you can file all the
-    # input attributes in read_input.py. The input also contains a list of airfoil coordinates in the from of parapy
-    # Points. If you want to make the airfoils the same way as I did, you can copy paste the unit_airfoil and
-    # airfoils attribute
-
-    # Also there is no code that checks whether the three inputs are bullshit yet
-    #
-
     def reynolds(self, chord):
         return self.input.speed*chord/1.5111E-5
 
@@ -206,7 +197,7 @@ class Model(Base):
     @Attribute
     def export_pdf(self):
         write_pdf(self.input, self.clmax[0], self.input.clmax - self.clmax[0], self.flap_hinge_location,
-                  self.planform_file_name)
+                  self.planform_file_name, self.flap_deflection)
         return "Done"
 
 
