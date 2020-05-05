@@ -82,8 +82,15 @@ class Avl_Wing(GeomBase):
                        position=self.section_positions[2])
     """
     @Attribute
+    def reversed_coordinates(self):
+        coords = []
+        for i in range(len(self.airfoil_coordinates)):
+            coords.append(self.airfoil_coordinates[-i-1])
+        return coords
+
+    @Attribute
     def unit_airfoil(self):
-        return FittedCurve(self.airfoil_coordinates, mesh_deflection=0.00001)
+        return FittedCurve(self.reversed_coordinates, mesh_deflection=0.00001)
 
     @Part(parse=False)
     def root_section(self):

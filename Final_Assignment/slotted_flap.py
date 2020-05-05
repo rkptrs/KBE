@@ -1,6 +1,6 @@
 from parapy.geom import *
 from parapy.core import *
-from functions import p2v, v2p, interp_coords, split_coordinates, hinge_position
+from functions import p2v, v2p, interp_coords, split_coordinates, hinge_position, v
 from wing_section import Wing_base
 import numpy as np
 
@@ -22,7 +22,7 @@ class Slotted_flap_section(Wing_base):
         for i in range(2):
             position = hinge_position(self.centers_1[i])
             circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4, angle=3*np.pi/2, position=position,
-                             start=self.centers_1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=0.00001)
+                             start=self.centers_1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=v.md)
         return circles
 
     @Attribute
@@ -44,32 +44,32 @@ class Slotted_flap_section(Wing_base):
         for i in range(2):
             lines.append(FittedCurve([self.centers_1[i] + Vector(0, 0, -self.hinge_dimension[1])*self.chords[i]/4,
                 self.centers_1[i] + Vector(-self.hinge_dimension[1], 0, -self.hinge_dimension[1])*self.chords[i]/4],
-                                     mesh_deflection=0.00001))
+                                     mesh_deflection=v.md))
         return lines
 
     @Attribute
     def split_arcs(self):
         arcs = []
         for i in range(2):
-            upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=0.00001)
-            arcs.append(Wire([upper_arc, self.lower_arc[i]], mesh_deflection=0.00001).compose())
+            upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=v.md)
+            arcs.append(Wire([upper_arc, self.lower_arc[i]], mesh_deflection=v.md).compose())
         return arcs
 
     @Attribute
     def wing_surf(self):
-        return RuledSurface(self.airfoils[0], self.airfoils[1], mesh_deflection=0.00001)
+        return RuledSurface(self.airfoils[0], self.airfoils[1], mesh_deflection=v.md)
 
     @Attribute
     def split_surface(self):
-        return RuledSurface(self.split_arcs[0], self.split_arcs[1], mesh_deflection=0.00001)
+        return RuledSurface(self.split_arcs[0], self.split_arcs[1], mesh_deflection=v.md)
 
     @Attribute
     def wing_parts(self):
-        return SplitSolid(self.wing_solid, self.split_surface, mesh_deflection=0.00001)
+        return SplitSolid(self.wing_solid, self.split_surface, mesh_deflection=v.md)
 
     @Part
     def main_wing(self):
-        return Solid(self.wing_parts.solids[1], mesh_deflection=0.00001)
+        return Solid(self.wing_parts.solids[1], mesh_deflection=v.md)
 
     @Attribute
     def hinge_location(self):
@@ -82,5 +82,5 @@ class Slotted_flap_section(Wing_base):
     def flap(self):
         return RotatedShape(self.wing_parts.solids[0], self.hinge_location[0],
                             vector=p2v(self.hinge_location[1]) - p2v(self.hinge_location[0]),
-                            angle=self.flap_deflection*np.pi/180, mesh_deflection=0.00001)
+                            angle=self.flap_deflection*np.pi/180, mesh_deflection=v.md)
 

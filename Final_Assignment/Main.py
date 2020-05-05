@@ -12,6 +12,7 @@ from avl_wing import Avl_analysis
 from xfoil_analysis import XfoilAnalysis
 from bar import bar
 from write_pdf import write_pdf
+from functions import v
 import numpy as np
 
 
@@ -29,7 +30,7 @@ class Fuselage(Base):
 
 class Model(Base):
     planform_file_name = Input('test_planform1')
-    cl_max_wing = Input(0.8)        # Set this to None to compute using internal analysis
+    cl_max_wing = Input(None)        # Set this to None to compute using internal analysis
 
     @Attribute
     def input(self):
@@ -128,7 +129,7 @@ class Model(Base):
                         kink_positionm=self.input.kink_position,
                         dihedral_deg=self.input.dihedral_deg,
                         mach=self.mach,
-                        airfoil_coordinates=self.input.airfoil_coordinates)
+                        airfoil_coordinates=self.input.airfoil_coordinates, hidden=True)
 
     @Part
     def hld_size(self):
@@ -147,7 +148,7 @@ class Model(Base):
                        naca=self.input.airfoil_name,
                        clmaxclean=self.clmax,
                        clmaxflapped=self.input.clmax,
-                       flaptype=self.input.flap_type)
+                       flaptype=self.input.flap_type, hidden=True)
 
     @Attribute
     def newspar(self):
@@ -196,7 +197,7 @@ class Model(Base):
     @Part
     def mirror(self):
         return MirroredShape(self.wing_parts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
-                             quantify=len(self.wing_parts) - 1, color=self.input.colour)
+                             quantify=len(self.wing_parts) - 1, color=self.input.colour, mesh_deflection=v.md)
 
     @Attribute
     def export_pdf(self):

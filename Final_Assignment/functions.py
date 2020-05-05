@@ -36,3 +36,7 @@ def interp_coords(x_list, z_list, x_target):
     dx = abs(x_list[closest1] - x_list[closest2])
     z_target = (z_list[closest1]*abs(x_list[closest2]-x_target) + z_list[closest2]*abs(x_list[closest1]-x_target))/dx
     return z_target
+
+
+class v:
+    md = 0.0001
