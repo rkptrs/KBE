@@ -189,11 +189,11 @@ class Model(Base):
                 dcl_target = hldsize.dcl_flap[1]
         else:
             newspar = self.input.rear_spar + 0.01
-
+        newspar2 = newspar
         # If the spar location is more than 0.95, the following code calculates if the inner flap is enough to attain
         # the desired CLmax
 
-        if newspar > 0.95:
+        if newspar2 > 0.95:
             newspar = self.input.rear_spar
             hldsize1 = HLDsize(root_chord=self.input.root_chord,
                               kink_position=self.input.kink_position,
@@ -239,6 +239,8 @@ class Model(Base):
                                       singleflap=True)
                     dcl45 = hldsize.dcl_flap[0]
                     dcl_target = hldsize.dcl_flap[1]
+            else:
+                newspar = newspar2
 
         return newspar - 0.01
 

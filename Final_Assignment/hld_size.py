@@ -87,7 +87,7 @@ class HLDsize(GeomBase):
 
     @Attribute
     def span(self):
-        return self.coor5[1]-self.coor1[1]
+        return (self.coor5[1]-self.coor1[1])
 
     @Attribute
     def kinkloc(self):
@@ -133,12 +133,12 @@ class HLDsize(GeomBase):
     @Attribute
     def area1(self):
         return (self.chordroot + self.chordkink) * sqrt(
-            self.coor3[1] ** 2 + self.coor3[2] ** 2) / 2
+            self.coor3[1] ** 2 + self.coor3[2] ** 2)
 
     @Attribute
     def area2(self):
         return (self.chordkink + self.chordtip) * sqrt(
-            (self.coor5[1] - self.coor3[1]) ** 2 + (self.coor5[2] - self.coor3[2]) ** 2) / 2
+            (self.coor5[1] - self.coor3[1]) ** 2 + (self.coor5[2] - self.coor3[2]) ** 2)
 
     @Attribute
     def s(self):
@@ -161,18 +161,18 @@ class HLDsize(GeomBase):
     @Attribute
     def sf1(self):
         if self.flap1stop <= self.kinkloc:
-            sf1 = (self.chordfuselage+self.chordflapstop)*(self.flap1stop-self.fuselageloc)*self.span/2
+            sf1 = (self.chordfuselage+self.chordflapstop)*(self.flap1stop-self.fuselageloc)*self.span
         elif self.flap1stop > self.kinkloc:
-            sf1 = (self.chordfuselage+self.chordkink)*(self.kinkloc-self.fuselageloc)*self.span/2 + (self.chordkink+self.chordflapstop)*(self.flap1stop-self.kinkloc)*self.span/2
+            sf1 = (self.chordfuselage+self.chordkink)*(self.kinkloc-self.fuselageloc)*self.span + (self.chordkink+self.chordflapstop)*(self.flap1stop-self.kinkloc)*self.span
         return sf1
 
     @Attribute
     def sf2(self):
         if self.flap2start < self.kinkloc:
-            sf2 = (self.chordflapstart + self.chordkink) * (self.kinkloc - self.flap2start) * self.span / 2 + (
-                        self.chordkink + self.chordaileron) * (self.aileronloc - self.kinkloc) * self.span / 2
+            sf2 = (self.chordflapstart + self.chordkink) * (self.kinkloc - self.flap2start) * self.span  + (
+                        self.chordkink + self.chordaileron) * (self.aileronloc - self.kinkloc) * self.span
         elif self.flap2start >= self.kinkloc:
-            sf2 = (self.chordflapstart + self.chordaileron) * (self.aileronloc - self.flap2start) * self.span / 2
+            sf2 = (self.chordflapstart + self.chordaileron) * (self.aileronloc - self.flap2start) * self.span
         return sf2
 
     @Attribute
