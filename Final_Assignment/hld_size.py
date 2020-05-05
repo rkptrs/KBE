@@ -29,6 +29,7 @@ class HLDsize(GeomBase):
     clmaxflapped = Input()
     trimfactor = Input(1.1)
     flaptype = Input()
+    singleflap = Input()
     angle_max = Input(45)
 
     @Attribute
@@ -176,7 +177,11 @@ class HLDsize(GeomBase):
 
     @Attribute
     def sf(self):
-        return self.sf1+self.sf2
+        if self.singleflap:
+            sf = self.sf1
+        elif not self.singleflap:
+            sf = self.sf1+self.sf2
+        return sf
 
     @Attribute
     def clmaxtrim(self):
