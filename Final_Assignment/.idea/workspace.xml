@@ -3,15 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a762d391-f63a-4a36-a0fb-690175a9bc3a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/avl_wing.py" beforeDir="false" afterPath="$PROJECT_DIR$/avl_wing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fowler_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/fowler_flap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plain_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/plain_flap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planforms/test_planform1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/planforms/test_planform1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planforms/test_planform2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/planforms/test_planform2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slotted_flap.py" beforeDir="false" afterPath="$PROJECT_DIR$/slotted_flap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wing_section.py" beforeDir="false" afterPath="$PROJECT_DIR$/wing_section.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +33,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bar.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/KBE-master/Final_Assignment" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -149,7 +143,10 @@
       <workItem from="1588494200943" duration="16913000" />
       <workItem from="1588580600154" duration="13436000" />
       <workItem from="1588597807556" duration="9224000" />
-      <workItem from="1588663390257" duration="5512000" />
+      <workItem from="1588663390257" duration="6167000" />
+      <workItem from="1588670691445" duration="598000" />
+      <workItem from="1588671785817" duration="217000" />
+      <workItem from="1588675515998" duration="3892000" />
     </task>
     <servers />
   </component>
@@ -161,26 +158,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1588518355925" />
-    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1588518354590">
+    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1588671997741">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1588518354590" />
-    <state width="1493" height="212" key="GridCell.Tab.0.bottom" timestamp="1588669345933">
+    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1588671997741" />
+    <state width="1493" height="121" key="GridCell.Tab.0.bottom" timestamp="1588681665881">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="212" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588669345933" />
-    <state width="1493" height="212" key="GridCell.Tab.0.center" timestamp="1588669345933">
+    <state width="1493" height="121" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588681665881" />
+    <state width="1493" height="121" key="GridCell.Tab.0.center" timestamp="1588681665881">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="212" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588669345933" />
-    <state width="1493" height="212" key="GridCell.Tab.0.left" timestamp="1588669345933">
+    <state width="1493" height="121" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588681665881" />
+    <state width="1493" height="121" key="GridCell.Tab.0.left" timestamp="1588681665881">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="212" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588669345933" />
-    <state width="1493" height="212" key="GridCell.Tab.0.right" timestamp="1588669345933">
+    <state width="1493" height="121" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588681665881" />
+    <state width="1493" height="121" key="GridCell.Tab.0.right" timestamp="1588681665881">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="212" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588669345933" />
+    <state width="1493" height="121" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588681665881" />
     <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1588663395344">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -205,6 +202,6 @@
     <SUITE FILE_PATH="coverage/Final_Assignment$write_pdf.coverage" NAME="write_pdf Coverage Results" MODIFIED="1588587555202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Aircraft_exercise$Main.coverage" NAME="Main Coverage Results" MODIFIED="1586874374957" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Final_Assignment$section.coverage" NAME="section Coverage Results" MODIFIED="1588149223852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../KBEassignment/aircraft" />
-    <SUITE FILE_PATH="coverage/Final_Assignment$Main.coverage" NAME="Main Coverage Results" MODIFIED="1588669345923" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Final_Assignment$Main.coverage" NAME="Main Coverage Results" MODIFIED="1588681665864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

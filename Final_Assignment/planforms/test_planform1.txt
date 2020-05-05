@@ -1,4 +1,4 @@
-wing_span = 12 		# one wing in meters
+wing_span = 15 		# one wing in meters
 root_chord = 5		# in meters
 taper_inner = 0.7
 taper_outer = 0.5
@@ -7,8 +7,8 @@ flap_gap = 0.5		# in meters
 sweep = 25		# degrees
 dihedral = 5		# degrees
 front_spar = 0.2	
-rear_spar = 0.5
-outer_flap_limit = 0.7	# y/(b/2)
+rear_spar = 0.6
+outer_flap_limit = 0.9	# y/(b/2)
 fuselage_radius = 1.5	# in meters
 clmax = 2 # CLmax the user wants to attain with flaps deployed.
 twist = 0 # in degrees

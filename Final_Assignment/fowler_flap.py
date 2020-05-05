@@ -57,6 +57,8 @@ class Fowler_flap_section(Wing_base):
             return parts, "Yellow"
         else:
             parts = SplitSolid(self.wing_solid, self.flap_split_surface[1], mesh_deflection=v.md).solids
+            from read_input import error
+            error("Airfoil trailing edge is too sharp for an optimal fowler flap design. Flap geometry was modified in order to make it feasible.")
             return parts, "Red"
 
     @Attribute

@@ -19,11 +19,13 @@ class Slotted_flap_section(Wing_base):
     @Attribute
     def lower_arc(self):
         circles = [0, 0]
+        y_offset = 0.0
         for i in range(2):
             position = hinge_position(self.centers_1[i])
-            circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4, angle=3*np.pi/2, position=position,
-                             start=self.centers_1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=v.md)
+            circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4 + y_offset, angle=3*np.pi/2, position=position-Vector(0, 0, -y_offset),
+                             start=self.centers_1[i] + Vector(-1, 0, -y_offset), color="Green", mesh_deflection=v.md)
         return circles
+
 
     @Attribute
     def upper_points(self):
@@ -43,16 +45,16 @@ class Slotted_flap_section(Wing_base):
         lines = []
         for i in range(2):
             lines.append(FittedCurve([self.centers_1[i] + Vector(0, 0, -self.hinge_dimension[1])*self.chords[i]/4,
-                self.centers_1[i] + Vector(-self.hinge_dimension[1], 0, -self.hinge_dimension[1])*self.chords[i]/4],
-                                     mesh_deflection=v.md))
+                self.centers_1[i] + Vector(self.hinge_dimension[1], 0, -self.hinge_dimension[1]*2)*self.chords[i]/4],
+                                     mesh_deflection=v.md, color="green"))
         return lines
 
     @Attribute
     def split_arcs(self):
         arcs = []
         for i in range(2):
-            upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=v.md)
-            arcs.append(Wire([upper_arc, self.lower_arc[i]], mesh_deflection=v.md).compose())
+            upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=v.md, color="red")
+            arcs.append(Wire([upper_arc, self.lower_arc[i], self.safety_line[i]], mesh_deflection=v.md).compose())
         return arcs
 
     @Attribute
