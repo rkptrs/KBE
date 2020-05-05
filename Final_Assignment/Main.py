@@ -30,7 +30,7 @@ class Fuselage(Base):
 
 class Model(Base):
     planform_file_name = Input('test_planform2')
-    cl_max_wing = Input(None)  # Set this to None to compute using internal analysis
+    cl_max_wing = Input(1.9)  # Set this to None to compute using internal analysis
 
     @Attribute
     def input(self):
@@ -168,6 +168,7 @@ class Model(Base):
             dcl45 = self.hld_size.dcl_flap[0]
             dcl_target = self.hld_size.dcl_flap[1]
             newspar = self.input.rear_spar
+
             sf1 = self.hld_size.sf1
             sf2 = self.hld_size.sf2
 
@@ -261,12 +262,12 @@ class Model(Base):
             for sub_section in section.children:
                 part_list.append(Solid(sub_section))
         return part_list
-
+    """
     @Part
     def mirror(self):
         return MirroredShape(self.wing_parts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
                              quantify=len(self.wing_parts) - 1, color=self.input.colour, mesh_deflection=v.md)
-
+    """
     @Attribute
     def export_pdf(self):
         write_pdf(self.input, self.clmax, self.input.clmax - self.clmax, self.flap_hinge_location,
