@@ -19,11 +19,10 @@ class Slotted_flap_section(Wing_base):
     @Attribute
     def lower_arc(self):
         circles = [0, 0]
-        y_offset = 0.0
         for i in range(2):
             position = hinge_position(self.centers_1[i])
-            circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4 + y_offset, angle=3*np.pi/2, position=position-Vector(0, 0, -y_offset),
-                             start=self.centers_1[i] + Vector(-1, 0, -y_offset), color="Green", mesh_deflection=v.md)
+            circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4, angle=3*np.pi/2, position=position+Vector(0, 0, 0),
+                             start=self.centers_1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=v.md)
         return circles
 
 
@@ -35,6 +34,7 @@ class Slotted_flap_section(Wing_base):
         x_2 = x_1 + 0.001
         z_1, z_2 = interp_coords(xt, zt, x_1), interp_coords(xt, zt, x_2)
         for i in range(2):
+
             points_1.append(self.points[i] + Vector(x_1, 0, z_1+0.001)*self.chords[i])
             points_2.append(self.points[i] + Vector(x_2, 0, z_2+0.001)*self.chords[i])
             points_3.append(self.centers_1[i] + Vector(-self.hinge_dimension[1]/4*self.chords[i], 0, 0))
@@ -54,7 +54,9 @@ class Slotted_flap_section(Wing_base):
         arcs = []
         for i in range(2):
             upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=v.md, color="red")
-            arcs.append(Wire([upper_arc, self.lower_arc[i], self.safety_line[i]], mesh_deflection=v.md).compose())
+            composed_arc = Wire([upper_arc, self.lower_arc[i], self.safety_line[i]], mesh_deflection=v.md).compose()
+            adjusted_arc = TranslatedCurve(composed_arc, Vector(0, (i*2-1)*0.01))
+            arcs.append(adjusted_arc)
         return arcs
 
     @Attribute
@@ -63,7 +65,7 @@ class Slotted_flap_section(Wing_base):
 
     @Attribute
     def split_surface(self):
-        return RuledSurface(self.split_arcs[0], self.split_arcs[1], mesh_deflection=v.md)
+        return RuledSurface(self.split_arcs[0], self.split_arcs[1], mesh_deflection=v.md, color="green")
 
     @Attribute
     def wing_parts(self):

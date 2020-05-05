@@ -30,7 +30,7 @@ class Fuselage(Base):
 
 class Model(Base):
     planform_file_name = Input('test_planform2')
-    cl_max_wing = Input(None)        # Set this to None to compute using internal analysis
+    cl_max_wing = Input(None)  # Set this to None to compute using internal analysis
 
     @Attribute
     def input(self):
@@ -41,7 +41,11 @@ class Model(Base):
 
     @Attribute
     def flap_hinge_location(self):
-        return self.newspar
+        return self.newspar[0]
+
+    @Attribute
+    def flap_count(self):
+        return self.newspar[1]
 
     @Attribute
     def flap_deflection(self):
@@ -63,7 +67,7 @@ class Model(Base):
             y = j / 20 * self.input.wing_span
             if y < self.input.kink_position:
                 chord = self.input.root_chord - (self.hld_size.chordroot - self.hld_size.chordkink) * (
-                            y / self.input.kink_position)
+                        y / self.input.kink_position)
             else:
                 y1 = y - self.input.kink_position
                 span = self.input.wing_span - self.input.kink_position
@@ -81,9 +85,9 @@ class Model(Base):
             p_bar.update(j * 5)
         for k in range(20):
             if k > 0:
-                if clmaxfoil[k] > 1.2*clmaxfoil[k-1] or clmaxfoil[k] < 0.85*clmaxfoil[k-1]:
-                    if clmaxfoil[k] > 1.2*np.average(clmaxfoil) or clmaxfoil[k]<0.85*np.average(clmaxfoil):
-                        clmaxfoil[k] = clmaxfoil[k-1]
+                if clmaxfoil[k] > 1.2 * clmaxfoil[k - 1] or clmaxfoil[k] < 0.85 * clmaxfoil[k - 1]:
+                    if clmaxfoil[k] > 1.2 * np.average(clmaxfoil) or clmaxfoil[k] < 0.85 * np.average(clmaxfoil):
+                        clmaxfoil[k] = clmaxfoil[k - 1]
         p_bar.update(100)
         p_bar.kill()
         return clmaxfoil
@@ -159,6 +163,7 @@ class Model(Base):
 
     @Attribute
     def newspar(self):
+        flap_count = 2
         if self.hld_size.can_attain:
             dcl45 = self.hld_size.dcl_flap[0]
             dcl_target = self.hld_size.dcl_flap[1]
@@ -196,29 +201,29 @@ class Model(Base):
         if newspar2 > 0.95:
             newspar = self.input.rear_spar
             hldsize1 = HLDsize(root_chord=self.input.root_chord,
-                              kink_position=self.input.kink_position,
-                              sweep=self.input.sweep_deg,
-                              dihedral=self.input.dihedral_deg,
-                              taper_inner=self.input.taper_inner,
-                              taper_outer=self.input.taper_outer,
-                              wing_span=self.input.wing_span,
-                              frontpar=self.input.front_spar,
-                              rearspar=newspar,
-                              aileronloc=self.input.outer_flap_lim,
-                              fuselage_radius=self.input.fuselage_radius,
-                              flap_gap=self.input.flap_gap,
-                              naca=self.input.airfoil_name,
-                              clmaxclean=self.clmax,
-                              clmaxflapped=self.input.clmax,
-                              flaptype=self.input.flap_type,
-                              singleflap=True)
+                               kink_position=self.input.kink_position,
+                               sweep=self.input.sweep_deg,
+                               dihedral=self.input.dihedral_deg,
+                               taper_inner=self.input.taper_inner,
+                               taper_outer=self.input.taper_outer,
+                               wing_span=self.input.wing_span,
+                               frontpar=self.input.front_spar,
+                               rearspar=newspar,
+                               aileronloc=self.input.outer_flap_lim,
+                               fuselage_radius=self.input.fuselage_radius,
+                               flap_gap=self.input.flap_gap,
+                               naca=self.input.airfoil_name,
+                               clmaxclean=self.clmax,
+                               clmaxflapped=self.input.clmax,
+                               flaptype=self.input.flap_type,
+                               singleflap=True)
             dcl45_1 = hldsize1.dcl_flap[0]
             dcl_target_1 = hldsize1.dcl_flap[1]
-            if dcl45_1 >= dcl_target_1: #Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
+            if dcl45_1 >= dcl_target_1:  # Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
 
                 dcl45 = self.hld_size.dcl_flap[0]
                 dcl_target = self.hld_size.dcl_flap[1]
-                while dcl45 > dcl_target and newspar < 1.0: #Calculating the hinge location of the flap if only the inner flap is used.
+                while dcl45 > dcl_target and newspar < 1.0:  # Calculating the hinge location of the flap if only the inner flap is used.
                     newspar = newspar + 0.01
                     hldsize = HLDsize(root_chord=self.input.root_chord,
                                       kink_position=self.input.kink_position,
@@ -239,15 +244,15 @@ class Model(Base):
                                       singleflap=True)
                     dcl45 = hldsize.dcl_flap[0]
                     dcl_target = hldsize.dcl_flap[1]
+                flap_count = 1
             else:
                 newspar = newspar2
-
-        return newspar - 0.01
+        return newspar - 0.01, flap_count
 
     @Part
     def wing(self):
         return Wing(input=self.input, flap_hinge_location=self.flap_hinge_location,
-                    color=self.input.colour, flap_deflection=self.flap_deflection)
+                    color=self.input.colour, flap_deflection=self.flap_deflection, flap_count=self.flap_count)
 
     @Attribute
     def wing_parts(self):
@@ -273,6 +278,7 @@ class Wing(Base):
     flap_deflection = Input(settable=False)
     flap_hinge_location = Input(settable=False)
     input = Input(settable=False)
+    flap_count = Input(settable=False)
 
     @Attribute
     def sweep(self):
@@ -298,7 +304,7 @@ class Wing(Base):
     def chord(self, y):
         if y < self.input.kink_position:
             return (self.input.root_chord * (
-                        self.input.kink_position - y) + self.kink_chord * y) / self.input.kink_position
+                    self.input.kink_position - y) + self.kink_chord * y) / self.input.kink_position
         else:
             y1 = y - self.input.kink_position
             span = self.input.wing_span - self.input.kink_position
@@ -314,6 +320,13 @@ class Wing(Base):
             return Wing_section
         elif self.input.flap_type == "Slotted":
             return Slotted_flap_section
+
+    @Attribute
+    def flap_function2(self):
+        if self.flap_count == 2:
+            return self.flap_function
+        else:
+            return Wing_section
 
     @Part
     def section_mid(self):
@@ -338,12 +351,12 @@ class Wing(Base):
 
     @Part
     def section_flap2(self):
-        return self.flap_function(chords=[self.chord(self.input.kink_position + self.input.flap_gap),
-                                          self.chord(self.input.outer_flap_lim * self.input.wing_span)],
-                                  points=[self.le_pos(self.input.kink_position + self.input.flap_gap),
-                                          self.le_pos(self.input.outer_flap_lim * self.input.wing_span)],
-                                  airfoil_coordinates=self.input.airfoil_coordinates,
-                                  flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
+        return self.flap_function2(chords=[self.chord(self.input.kink_position + self.input.flap_gap),
+                                           self.chord(self.input.outer_flap_lim * self.input.wing_span)],
+                                   points=[self.le_pos(self.input.kink_position + self.input.flap_gap),
+                                           self.le_pos(self.input.outer_flap_lim * self.input.wing_span)],
+                                   airfoil_coordinates=self.input.airfoil_coordinates,
+                                   flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
 
     @Part
     def section_outer(self):
