@@ -29,7 +29,7 @@ class Fuselage(Base):
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform1')
+    planform_file_name = Input('test_planform2')
     cl_max_wing = Input(None)        # Set this to None to compute using internal analysis
 
     @Attribute
@@ -77,7 +77,13 @@ class Model(Base):
                                            mach=self.mach)
 
             clmaxfoil[j] = xfoil_analysis.clmax
+
             p_bar.update(j * 5)
+        for k in range(20):
+            if k > 0:
+                if clmaxfoil[k] > 1.2*clmaxfoil[k-1] or clmaxfoil[k] < 0.85*clmaxfoil[k-1]:
+                    if clmaxfoil[k] > 1.2*np.average(clmaxfoil) or clmaxfoil[k]<0.85*np.average(clmaxfoil):
+                        clmaxfoil[k] = clmaxfoil[k-1]
         p_bar.update(100)
         p_bar.kill()
         return clmaxfoil
@@ -148,7 +154,8 @@ class Model(Base):
                        naca=self.input.airfoil_name,
                        clmaxclean=self.clmax,
                        clmaxflapped=self.input.clmax,
-                       flaptype=self.input.flap_type, hidden=True)
+                       flaptype=self.input.flap_type,
+                       singleflap=False, hidden=True)
 
     @Attribute
     def newspar(self):
@@ -156,6 +163,9 @@ class Model(Base):
             dcl45 = self.hld_size.dcl_flap[0]
             dcl_target = self.hld_size.dcl_flap[1]
             newspar = self.input.rear_spar
+            sf1 = self.hld_size.sf1
+            sf2 = self.hld_size.sf2
+
             while dcl45 > dcl_target and newspar < 1.0:
                 newspar = newspar + 0.01
                 hldsize = HLDsize(root_chord=self.input.root_chord,
@@ -173,11 +183,64 @@ class Model(Base):
                                   naca=self.input.airfoil_name,
                                   clmaxclean=self.clmax,
                                   clmaxflapped=self.input.clmax,
-                                  flaptype=self.input.flap_type)
+                                  flaptype=self.input.flap_type,
+                                  singleflap=False)
                 dcl45 = hldsize.dcl_flap[0]
                 dcl_target = hldsize.dcl_flap[1]
         else:
+            newspar = self.input.rear_spar + 0.01
+        newspar2 = newspar
+        # If the spar location is more than 0.95, the following code calculates if the inner flap is enough to attain
+        # the desired CLmax
+
+        if newspar2 > 0.95:
             newspar = self.input.rear_spar
+            hldsize1 = HLDsize(root_chord=self.input.root_chord,
+                              kink_position=self.input.kink_position,
+                              sweep=self.input.sweep_deg,
+                              dihedral=self.input.dihedral_deg,
+                              taper_inner=self.input.taper_inner,
+                              taper_outer=self.input.taper_outer,
+                              wing_span=self.input.wing_span,
+                              frontpar=self.input.front_spar,
+                              rearspar=newspar,
+                              aileronloc=self.input.outer_flap_lim,
+                              fuselage_radius=self.input.fuselage_radius,
+                              flap_gap=self.input.flap_gap,
+                              naca=self.input.airfoil_name,
+                              clmaxclean=self.clmax,
+                              clmaxflapped=self.input.clmax,
+                              flaptype=self.input.flap_type,
+                              singleflap=True)
+            dcl45_1 = hldsize1.dcl_flap[0]
+            dcl_target_1 = hldsize1.dcl_flap[1]
+            if dcl45_1 >= dcl_target_1: #Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
+
+                dcl45 = self.hld_size.dcl_flap[0]
+                dcl_target = self.hld_size.dcl_flap[1]
+                while dcl45 > dcl_target and newspar < 1.0: #Calculating the hinge location of the flap if only the inner flap is used.
+                    newspar = newspar + 0.01
+                    hldsize = HLDsize(root_chord=self.input.root_chord,
+                                      kink_position=self.input.kink_position,
+                                      sweep=self.input.sweep_deg,
+                                      dihedral=self.input.dihedral_deg,
+                                      taper_inner=self.input.taper_inner,
+                                      taper_outer=self.input.taper_outer,
+                                      wing_span=self.input.wing_span,
+                                      frontpar=self.input.front_spar,
+                                      rearspar=newspar,
+                                      aileronloc=self.input.outer_flap_lim,
+                                      fuselage_radius=self.input.fuselage_radius,
+                                      flap_gap=self.input.flap_gap,
+                                      naca=self.input.airfoil_name,
+                                      clmaxclean=self.clmax,
+                                      clmaxflapped=self.input.clmax,
+                                      flaptype=self.input.flap_type,
+                                      singleflap=True)
+                    dcl45 = hldsize.dcl_flap[0]
+                    dcl_target = hldsize.dcl_flap[1]
+            else:
+                newspar = newspar2
 
         return newspar - 0.01
 
