@@ -4,9 +4,9 @@ from tkinter import Tk, mainloop, X, messagebox
 import warnings
 
 
-def get_line(f, number=True):
+def get_line(f, number=True): # Function for reading a line of f and returning the number specified in the line
     line = f.readline()
-    mode = 0
+    mode = 0    
     out = ""
     for s in line:
         if mode == 1:
