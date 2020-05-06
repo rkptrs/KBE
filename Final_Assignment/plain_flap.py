@@ -31,7 +31,7 @@ class Plain_flap_section(Wing_base):
 
     @Attribute
     def wing_parts(self):
-        return SplitSolid(self.wing_solid, self.flap_split_cylinder, mesh_deflection=v.md)
+        return SplitSolid(self.wingSolid, self.flap_split_cylinder, mesh_deflection=v.md)
 
     @Part
     def main_wing(self):

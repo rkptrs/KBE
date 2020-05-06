@@ -4,7 +4,7 @@ from parapy.gui import display
 from airfoil import get_airfoil
 from wing_section import Wing_section
 from plain_flap import Plain_flap_section
-from fowler_flap import Fowler_flap_section
+from fowler_flap import FowlerFlapSection
 from slotted_flap import Slotted_flap_section
 from read_input import get_input
 import numpy as np
@@ -106,7 +106,7 @@ class Wing(Base):
         if self.flap_type == "Plain":
             return Plain_flap_section
         elif self.flap_type == "Flower":
-            return Fowler_flap_section
+            return FowlerFlapSection
         elif self.flap_type == "None":
             return Wing_section
         elif self.flap_type == "Slotted":

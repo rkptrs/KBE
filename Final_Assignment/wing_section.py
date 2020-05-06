@@ -27,7 +27,7 @@ class Wing_base(Base):
         return out
 
     @Attribute                  # Returns the wing solid constructed from the two airfoils
-    def wing_solid(self):
+    def wingSolid(self):
         return LoftedSolid([self.airfoils[0], self.airfoils[1]], mesh_deflection=v.md)
 
     # The height of the airfoil at hinge location and z coordinate of center of hinge computed by
@@ -48,4 +48,4 @@ class Wing_base(Base):
 class Wing_section(Wing_base):  # This is a wing section without flaps
     @Part
     def main_wing(self):
-        return Solid(self.wing_solid.solids[0], mesh_deflection=v.md)
+        return Solid(self.wingSolid.solids[0], mesh_deflection=v.md)

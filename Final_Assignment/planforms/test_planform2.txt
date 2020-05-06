@@ -13,5 +13,5 @@ fuselage_radius = 1.5
 clmax = 1.8 # CLmax the user wants to attain with flaps deployed.
 twist = 2 # in degrees
 speed = 100 # in meters per second
-airfoil_name = ex1	# file in airfoils folder
+airfoil_name = ex5	# file in airfoils folder
 flap_type = Fowler

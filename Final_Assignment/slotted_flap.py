@@ -69,7 +69,7 @@ class Slotted_flap_section(Wing_base):
 
     @Attribute
     def wing_parts(self):
-        return SplitSolid(self.wing_solid, self.split_surface, mesh_deflection=v.md)
+        return SplitSolid(self.wingSolid, self.split_surface, mesh_deflection=v.md)
 
     @Part
     def main_wing(self):
