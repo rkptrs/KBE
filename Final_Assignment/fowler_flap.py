@@ -6,10 +6,12 @@ from read_input import error
 import numpy as np
 
 
-class FowlerFlapSection(Wing_base):
+class FowlerFlapSection(Wing_base):     # wing section with a flower flap
+    # Many Attributes return a list of two 
+
 
     @Attribute
-    def hingePoints(self):
+    def hingePoints(self):              # define location of the center of the hinge
         out = [0, 0]
         for i in range(2):
             out[i] = Point(self.flap_hinge_location * self.chords[i] + self.points[i][0],
