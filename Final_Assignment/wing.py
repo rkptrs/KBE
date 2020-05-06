@@ -22,12 +22,12 @@ class Wing(Base):
         return self.input.dihedral_deg * np.pi / 180
 
     @Attribute
-    def kink_chord(self):
+    def kinkChord(self):
         return self.input.root_chord * self.input.taper_inner
 
     @Attribute
-    def tip_chord(self):
-        return self.kink_chord * self.input.taper_outer
+    def tipChord(self):
+        return self.kinkChord * self.input.taper_outer
 
     def le_pos(self, y):
         x = y * np.tan(self.sweep)
@@ -37,63 +37,66 @@ class Wing(Base):
     def chord(self, y):
         if y < self.input.kink_position:
             return (self.input.root_chord * (
-                    self.input.kink_position - y) + self.kink_chord * y) / self.input.kink_position
+                    self.input.kink_position - y) + self.kinkChord * y) / self.input.kink_position
         else:
             y1 = y - self.input.kink_position
             span = self.input.wing_span - self.input.kink_position
-            return (self.kink_chord * (span - y1) + self.tip_chord * y1) / span
+            return (self.kinkChord * (span - y1) + self.tipChord * y1) / span
 
     @Attribute
-    def flap_function(self):
-        if self.input.flap_type == "Plain":
-            return Plain_flap_section
-        elif self.input.flap_type == "Fowler":
-            return FowlerFlapSection
-        elif self.input.flap_type == "None":
+    def flapFunction1(self):
+        if self.flap_count == 0:
             return Wing_section
-        elif self.input.flap_type == "Slotted":
-            return Slotted_flap_section
+        else:
+            if self.input.flap_type == "Plain":
+                return Plain_flap_section
+            elif self.input.flap_type == "Fowler":
+                return FowlerFlapSection
+            elif self.input.flap_type == "None":
+                return Wing_section
+            elif self.input.flap_type == "Slotted":
+                return Slotted_flap_section
 
     @Attribute
-    def flap_function2(self):
+    def flapFunction2(self):
         if self.flap_count == 2:
-            return self.flap_function
+            return self.flapFunction1
         else:
             return Wing_section
 
     @Part
-    def section_mid(self):
+    def sectionMiddle(self):
         return Wing_section(chords=[self.input.root_chord, self.chord(self.input.fuselage_radius)],
                             points=[self.le_pos(0), self.le_pos(self.input.fuselage_radius)],
                             airfoil_coordinates=self.input.airfoil_coordinates)
 
     @Part
-    def section_flap1(self):
-        return self.flap_function(chords=[self.chord(self.input.fuselage_radius), self.kink_chord],
+    def sectionFlap1(self):
+        return self.flapFunction1(chords=[self.chord(self.input.fuselage_radius), self.kinkChord],
                                   points=[self.le_pos(self.input.fuselage_radius),
                                           self.le_pos(self.input.kink_position)],
                                   airfoil_coordinates=self.input.airfoil_coordinates,
                                   flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
 
     @Part
-    def section_gap(self):
-        return Wing_section(chords=[self.kink_chord, self.chord(self.input.kink_position + self.input.flap_gap)],
+    def sectionGap(self):
+        return Wing_section(chords=[self.kinkChord, self.chord(self.input.kink_position + self.input.flap_gap)],
                             points=[self.le_pos(self.input.kink_position),
                                     self.le_pos(self.input.kink_position + self.input.flap_gap)],
                             airfoil_coordinates=self.input.airfoil_coordinates)
 
     @Part
-    def section_flap2(self):
-        return self.flap_function2(chords=[self.chord(self.input.kink_position + self.input.flap_gap),
-                                           self.chord(self.input.outer_flap_lim * self.input.wing_span)],
-                                   points=[self.le_pos(self.input.kink_position + self.input.flap_gap),
+    def sectionFlap2(self):
+        return self.flapFunction2(chords=[self.chord(self.input.kink_position + self.input.flap_gap),
+                                          self.chord(self.input.outer_flap_lim * self.input.wing_span)],
+                                  points=[self.le_pos(self.input.kink_position + self.input.flap_gap),
                                            self.le_pos(self.input.outer_flap_lim * self.input.wing_span)],
-                                   airfoil_coordinates=self.input.airfoil_coordinates,
-                                   flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
+                                  airfoil_coordinates=self.input.airfoil_coordinates,
+                                  flap_deflection=self.flap_deflection, flap_hinge_location=self.flap_hinge_location)
 
     @Part
-    def section_outer(self):
-        return Wing_section(chords=[self.chord(self.input.outer_flap_lim * self.input.wing_span), self.tip_chord],
+    def sectionOuter(self):
+        return Wing_section(chords=[self.chord(self.input.outer_flap_lim * self.input.wing_span), self.tipChord],
                             points=[self.le_pos(self.input.outer_flap_lim * self.input.wing_span),
                                     self.le_pos(self.input.wing_span)],
                             airfoil_coordinates=self.input.airfoil_coordinates, hidden=False)

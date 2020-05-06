@@ -15,7 +15,8 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform2')
-    cl_max_wing = Input(1.9)  # Set this to None to compute using internal analysis
+    cl_max_wing = Input(1)  # Set this to None to compute using internal analysis
+    hideLeftWing = Input(False)
 
     @Attribute
     def input(self):
@@ -25,19 +26,18 @@ class Model(Base):
         return out
 
     @Attribute
-    def flap_hinge_location(self):
-        print(self.newspar[0], "NS")
-        return self.newspar[0]
+    def flapHingeLocation(self):
+        return self.newSpar[0]
 
     @Attribute
-    def flap_count(self):
-        return self.newspar[1]
+    def flapCount(self):
+        return self.newSpar[1]
 
     @Attribute
-    def flap_deflection(self):
-        return self.hld_size.angle_max
+    def flapDeflection(self):
+        return self.hldSize.angle_max
 
-    def reynolds(self, chord):
+    def reynoldsNumber(self, chord):
         return self.input.speed * chord / 1.5111E-5
 
     @Attribute
@@ -52,18 +52,18 @@ class Model(Base):
         for j in range(20):
             y = j / 20 * self.input.wing_span
             if y < self.input.kink_position:
-                chord = self.input.root_chord - (self.hld_size.chordroot - self.hld_size.chordkink) * (
+                chord = self.input.root_chord - (self.hldSize.chordroot - self.hldSize.chordkink) * (
                         y / self.input.kink_position)
             else:
                 y1 = y - self.input.kink_position
                 span = self.input.wing_span - self.input.kink_position
-                chord = self.hld_size.chordkink - (self.hld_size.chordkink - self.hld_size.chordtip) * (y1 / span)
-            xfoil_analysis = XfoilAnalysis(lifting_surface=self.avl_wing.surface1,
+                chord = self.hldSize.chordkink - (self.hldSize.chordkink - self.hldSize.chordtip) * (y1 / span)
+            xfoil_analysis = XfoilAnalysis(lifting_surface=self.avlWing.surface1,
                                            cutting_plane_span_fraction=j / 20,
                                            flydir=True,
-                                           reynolds_number=self.reynolds(chord),
-                                           root_section=self.avl_wing.root_section,
-                                           tip_section=self.avl_wing.kink_section,
+                                           reynolds_number=self.reynoldsNumber(chord),
+                                           root_section=self.avlWing.root_section,
+                                           tip_section=self.avlWing.kink_section,
                                            mach=self.mach)
 
             clmaxfoil[j] = xfoil_analysis.clmax
@@ -79,7 +79,7 @@ class Model(Base):
         return clmaxfoil
 
     @Attribute
-    def clmax(self):
+    def clMax(self):
         if self.cl_max_wing is None:
             Avl_aircraft = Avl_Wing(span=self.input.wing_span,
                                     taper_outer=self.input.taper_outer,
@@ -87,7 +87,7 @@ class Model(Base):
                                     twist=self.input.twist,
                                     airfoil=self.input.airfoil_name,
                                     chord_root=self.input.root_chord,
-                                    chord_kink=self.hld_size.chordkink,
+                                    chord_kink=self.hldSize.chordkink,
                                     kink_positionm=self.input.kink_position,
                                     dihedral_deg=self.input.dihedral_deg,
                                     mach=self.mach,
@@ -114,21 +114,21 @@ class Model(Base):
             return self.cl_max_wing
 
     @Part
-    def avl_wing(self):
+    def avlWing(self):
         return Avl_Wing(span=self.input.wing_span,
                         taper_outer=self.input.taper_outer,
                         le_sweep=self.input.sweep_deg,
                         twist=self.input.twist,
                         airfoil=self.input.airfoil_name,
                         chord_root=self.input.root_chord,
-                        chord_kink=self.hld_size.chordkink,
+                        chord_kink=self.hldSize.chordkink,
                         kink_positionm=self.input.kink_position,
                         dihedral_deg=self.input.dihedral_deg,
                         mach=self.mach,
                         airfoil_coordinates=self.input.airfoil_coordinates, hidden=True)
 
     @Part
-    def hld_size(self):
+    def hldSize(self):
         return HLDsize(root_chord=self.input.root_chord,
                        kink_position=self.input.kink_position,
                        sweep=self.input.sweep_deg,
@@ -142,21 +142,21 @@ class Model(Base):
                        fuselage_radius=self.input.fuselage_radius,
                        flap_gap=self.input.flap_gap,
                        naca=self.input.airfoil_name,
-                       clmaxclean=self.clmax,
+                       clmaxclean=self.clMax,
                        clmaxflapped=self.input.clmax,
                        flaptype=self.input.flap_type,
                        singleflap=False, hidden=True)
 
     @Attribute
-    def newspar(self):
+    def newSpar(self):
         flap_count = 2
-        if self.hld_size.can_attain:
-            dcl45 = self.hld_size.dcl_flap[0]
-            dcl_target = self.hld_size.dcl_flap[1]
+        if self.hldSize.can_attain:
+            dcl45 = self.hldSize.dcl_flap[0]
+            dcl_target = self.hldSize.dcl_flap[1]
             newspar = self.input.rear_spar
 
-            sf1 = self.hld_size.sf1
-            sf2 = self.hld_size.sf2
+            sf1 = self.hldSize.sf1
+            sf2 = self.hldSize.sf2
 
             while dcl45 > dcl_target and newspar < 1.0:
                 newspar = newspar + 0.01
@@ -173,7 +173,7 @@ class Model(Base):
                                   fuselage_radius=self.input.fuselage_radius,
                                   flap_gap=self.input.flap_gap,
                                   naca=self.input.airfoil_name,
-                                  clmaxclean=self.clmax,
+                                  clmaxclean=self.clMax,
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
                                   singleflap=False)
@@ -200,7 +200,7 @@ class Model(Base):
                                fuselage_radius=self.input.fuselage_radius,
                                flap_gap=self.input.flap_gap,
                                naca=self.input.airfoil_name,
-                               clmaxclean=self.clmax,
+                               clmaxclean=self.clMax,
                                clmaxflapped=self.input.clmax,
                                flaptype=self.input.flap_type,
                                singleflap=True)
@@ -208,8 +208,8 @@ class Model(Base):
             dcl_target_1 = hldsize1.dcl_flap[1]
             if dcl45_1 >= dcl_target_1:  # Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
 
-                dcl45 = self.hld_size.dcl_flap[0]
-                dcl_target = self.hld_size.dcl_flap[1]
+                dcl45 = self.hldSize.dcl_flap[0]
+                dcl_target = self.hldSize.dcl_flap[1]
                 while dcl45 > dcl_target and newspar < 1.0:  # Calculating the hinge location of the flap if only the inner flap is used.
                     newspar = newspar + 0.01
                     hldsize = HLDsize(root_chord=self.input.root_chord,
@@ -225,7 +225,7 @@ class Model(Base):
                                       fuselage_radius=self.input.fuselage_radius,
                                       flap_gap=self.input.flap_gap,
                                       naca=self.input.airfoil_name,
-                                      clmaxclean=self.clmax,
+                                      clmaxclean=self.clMax,
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
                                       singleflap=True)
@@ -237,32 +237,34 @@ class Model(Base):
 
             if newspar > 0.97:
                 flap_count = 0
-                error("The size of the flap might be too small to justify its use. Consider a small increase in wing area instead.")
+                error("The size of the flap might be too small to justify its use. "
+                      "Consider a small increase in wing area instead.")
 
         return newspar - 0.01, flap_count
 
     @Part
     def wing(self):
-        return Wing(input=self.input, flap_hinge_location=self.flap_hinge_location,
-                    color=self.input.colour, flap_deflection=self.flap_deflection, flap_count=self.flap_count)
+        return Wing(input=self.input, flap_hinge_location=self.flapHingeLocation,
+                    color=self.input.colour, flap_deflection=self.flapDeflection, flap_count=self.flapCount)
 
     @Attribute
-    def wing_parts(self):
+    def wingParts(self):
         part_list = []
         for section in self.wing.children:
             for sub_section in section.children:
                 part_list.append(Solid(sub_section))
         return part_list
-    """
+
     @Part
     def mirror(self):
-        return MirroredShape(self.wing_parts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
-                             quantify=len(self.wing_parts) - 1, color=self.input.colour, mesh_deflection=v.md)
-    """
+        return MirroredShape(self.wingParts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
+                             quantify=len(self.wingParts) - 1, color=self.input.colour, mesh_deflection=v.md,
+                             hidden=self.hideLeftWing)
+
     @Attribute
-    def export_pdf(self):
-        write_pdf(self.input, self.clmax, self.input.clmax - self.clmax, self.flap_hinge_location,
-                  self.planform_file_name, self.flap_deflection)
+    def exportPdf(self):
+        write_pdf(self.input, self.clMax, self.input.clmax - self.clMax, self.flapHingeLocation,
+                  self.planform_file_name, self.flapDeflection)
         return "Done"
 
 

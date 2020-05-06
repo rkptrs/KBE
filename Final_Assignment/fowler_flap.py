@@ -1,6 +1,6 @@
 from parapy.geom import *
 from parapy.core import *
-from functions import p2v, v2p, interp_coords, split_coordinates, hinge_position, v
+from functions import p2v, v2p, hinge_position, v
 from wing_section import Wing_base
 from read_input import error
 import numpy as np
@@ -32,7 +32,7 @@ class FowlerFlapSection(Wing_base):
         for i in range(2):
             lines.append(FittedCurve([self.hingePoints[i] + Vector(0, 0, self.hinge_dimension[1] * self.chords[i] / 4),
                                       Point(self.chords[i] * 1.001 + self.points[i][0], self.points[i][1],
-                                            self.points[i][2])], mesh_deflection=v.md, color="green"))
+                                            self.points[i][2]+0.001)], mesh_deflection=v.md, color="green"))
         return lines
 
     @Attribute
@@ -50,7 +50,7 @@ class FowlerFlapSection(Wing_base):
     def flapSplitSurface(self):
         composed_1, composed_2 = [0, 0], [0, 0]
         for i in range(2):
-            c = (i * 2 - 1) * 0.001
+            c = (i * 2 - 1) * 0.005
             composed_2[i] = Wire([self.upperLine[i], self.flapSplitArcs[i], self.lowerLine[i]],
                                  mesh_deflection=v.md).compose()
             composed_2[i] = TranslatedCurve(composed_2[i], Vector(0, c, 0))

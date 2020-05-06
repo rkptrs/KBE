@@ -8,7 +8,7 @@ import numpy as np
 class Slotted_flap_section(Wing_base):
 
     @Attribute
-    def centers_1(self):
+    def centers1(self):
         out = [0, 0]
         for i in range(2):
             out[i] = Point(self.flap_hinge_location*self.chords[i] + self.points[i][0],
@@ -17,17 +17,17 @@ class Slotted_flap_section(Wing_base):
         return out
 
     @Attribute
-    def lower_arc(self):
+    def lowerArc(self):
         circles = [0, 0]
         for i in range(2):
-            position = hinge_position(self.centers_1[i])
-            circles[i] = Arc(self.hinge_dimension[1]*self.chords[i]/4, angle=3*np.pi/2, position=position+Vector(0, 0, 0),
-                             start=self.centers_1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=v.md)
+            position = hinge_position(self.centers1[i])
+            circles[i] = Arc(self.hinge_dimension[1] * self.chords[i] / 4, angle=3*np.pi/2, position=position+Vector(0, 0, 0),
+                             start=self.centers1[i] + Vector(-1, 0, 0), color="Green", mesh_deflection=v.md)
         return circles
 
 
     @Attribute
-    def upper_points(self):
+    def upperPoints(self):
         xb, zb, xt, zt = split_coordinates(self.airfoil_coordinates)
         points_1, points_2, points_3 = [], [], []
         x_1 = self.flap_hinge_location + 0.5 * self.hinge_dimension[1]
@@ -37,54 +37,54 @@ class Slotted_flap_section(Wing_base):
 
             points_1.append(self.points[i] + Vector(x_1, 0, z_1+0.001)*self.chords[i])
             points_2.append(self.points[i] + Vector(x_2, 0, z_2+0.001)*self.chords[i])
-            points_3.append(self.centers_1[i] + Vector(-self.hinge_dimension[1]/4*self.chords[i], 0, 0))
+            points_3.append(self.centers1[i] + Vector(-self.hinge_dimension[1] / 4 * self.chords[i], 0, 0))
         return points_1, points_2, points_3
 
     @Attribute
-    def safety_line(self):
+    def lowerLine(self):
         lines = []
         for i in range(2):
-            lines.append(FittedCurve([self.centers_1[i] + Vector(0, 0, -self.hinge_dimension[1])*self.chords[i]/4,
-                self.centers_1[i] + Vector(self.hinge_dimension[1], 0, -self.hinge_dimension[1]*2)*self.chords[i]/4],
+            lines.append(FittedCurve([self.centers1[i] + Vector(0, 0, -self.hinge_dimension[1]) * self.chords[i] / 4,
+                                      self.centers1[i] + Vector(self.hinge_dimension[1], 0, -self.hinge_dimension[1] * 2) * self.chords[i] / 4],
                                      mesh_deflection=v.md, color="green"))
         return lines
 
     @Attribute
-    def split_arcs(self):
+    def splitArcs(self):
         arcs = []
         for i in range(2):
-            upper_arc = Arc3P(self.upper_points[1][i], self.upper_points[0][i], self.upper_points[2][i], mesh_deflection=v.md, color="red")
-            composed_arc = Wire([upper_arc, self.lower_arc[i], self.safety_line[i]], mesh_deflection=v.md).compose()
+            upper_arc = Arc3P(self.upperPoints[1][i], self.upperPoints[0][i], self.upperPoints[2][i], mesh_deflection=v.md, color="red")
+            composed_arc = Wire([upper_arc, self.lowerArc[i], self.lowerLine[i]], mesh_deflection=v.md).compose()
             adjusted_arc = TranslatedCurve(composed_arc, Vector(0, (i*2-1)*0.01))
             arcs.append(adjusted_arc)
         return arcs
 
     @Attribute
-    def wing_surf(self):
+    def wingSurface(self):
         return RuledSurface(self.airfoils[0], self.airfoils[1], mesh_deflection=v.md)
 
     @Attribute
-    def split_surface(self):
-        return RuledSurface(self.split_arcs[0], self.split_arcs[1], mesh_deflection=v.md, color="green")
+    def splitSurface(self):
+        return RuledSurface(self.splitArcs[0], self.splitArcs[1], mesh_deflection=v.md, color="green")
 
     @Attribute
-    def wing_parts(self):
-        return SplitSolid(self.wingSolid, self.split_surface, mesh_deflection=v.md)
+    def wingParts(self):
+        return SplitSolid(self.wingSolid, self.splitSurface, mesh_deflection=v.md)
 
     @Part
-    def main_wing(self):
-        return Solid(self.wing_parts.solids[1], mesh_deflection=v.md)
+    def mainWing(self):
+        return Solid(self.wingParts.solids[1], mesh_deflection=v.md)
 
     @Attribute
-    def hinge_location(self):
+    def hingeLocation(self):
         points = []
         for i in range(2):
-            points.append(self.centers_1[i] + Vector(0, 0, -self.hinge_dimension[1]*self.chords[i]))
+            points.append(self.centers1[i] + Vector(0, 0, -self.hinge_dimension[1] * self.chords[i]))
         return points
 
     @Part
     def flap(self):
-        return RotatedShape(self.wing_parts.solids[0], self.hinge_location[0],
-                            vector=p2v(self.hinge_location[1]) - p2v(self.hinge_location[0]),
+        return RotatedShape(self.wingParts.solids[0], self.hingeLocation[0],
+                            vector=p2v(self.hingeLocation[1]) - p2v(self.hingeLocation[0]),
                             angle=self.flap_deflection*np.pi/180, mesh_deflection=v.md)
 
