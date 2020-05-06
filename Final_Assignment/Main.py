@@ -15,8 +15,8 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform2')
-    cl_max_wing = Input(1)  # Set this to None to compute using internal analysis
-    hideLeftWing = Input(False)
+    cl_max_wing = Input(1.3)  # Set this to None to compute using internal analysis
+    hideLeftWing = Input(True)
 
     @Attribute
     def input(self):
@@ -141,7 +141,7 @@ class Model(Base):
                        aileronloc=self.input.outer_flap_lim,
                        fuselage_radius=self.input.fuselage_radius,
                        flap_gap=self.input.flap_gap,
-                       naca=self.input.airfoil_name,
+                       airfoilCoordinates=self.input.airfoil_coordinates,
                        clmaxclean=self.clMax,
                        clmaxflapped=self.input.clmax,
                        flaptype=self.input.flap_type,
@@ -172,7 +172,7 @@ class Model(Base):
                                   aileronloc=self.input.outer_flap_lim,
                                   fuselage_radius=self.input.fuselage_radius,
                                   flap_gap=self.input.flap_gap,
-                                  naca=self.input.airfoil_name,
+                                  airfoilCoordinates=self.input.airfoil_coordinates,
                                   clmaxclean=self.clMax,
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
@@ -199,7 +199,7 @@ class Model(Base):
                                aileronloc=self.input.outer_flap_lim,
                                fuselage_radius=self.input.fuselage_radius,
                                flap_gap=self.input.flap_gap,
-                               naca=self.input.airfoil_name,
+                               airfoilCoordinates=self.input.airfoil_coordinates,
                                clmaxclean=self.clMax,
                                clmaxflapped=self.input.clmax,
                                flaptype=self.input.flap_type,
@@ -224,7 +224,7 @@ class Model(Base):
                                       aileronloc=self.input.outer_flap_lim,
                                       fuselage_radius=self.input.fuselage_radius,
                                       flap_gap=self.input.flap_gap,
-                                      naca=self.input.airfoil_name,
+                                      airfoilCoordinates=self.input.airfoil_coordinates,
                                       clmaxclean=self.clMax,
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
@@ -235,8 +235,8 @@ class Model(Base):
             else:
                 newspar = newspar2
 
-            if newspar > 0.97:
-                flap_count = 0
+            if newspar > 0.99:
+                #flap_count = 0
                 error("The size of the flap might be too small to justify its use. "
                       "Consider a small increase in wing area instead.")
 

@@ -23,7 +23,7 @@ class HLDsize(GeomBase):
     aileronloc = Input()
     fuselage_radius = Input()
     flap_gap = Input()
-    naca = Input()
+    airfoilCoordinates = Input()
     clalpha = Input(2*pi)
     clmaxclean = Input()
     clmaxflapped = Input()
@@ -34,7 +34,10 @@ class HLDsize(GeomBase):
 
     @Attribute
     def t_c(self):
-        return int(self.naca[-2:])/100
+        y_values = []
+        for c in self.airfoilCoordinates:
+            y_values.append(c[2])
+        return max(y_values) - min(y_values)
 
     @Attribute
     def fuselageloc(self):
