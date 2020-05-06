@@ -15,7 +15,7 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform2')
-    cl_max_wing = Input(1.3)  # Set this to None to compute using internal analysis
+    cl_max_wing = Input(1.1)  # Set this to None to compute using internal analysis
     hideLeftWing = Input(True)
 
     @Attribute
@@ -212,7 +212,7 @@ class Model(Base):
                 dcl_target = self.hldSize.dcl_flap[1]
                 while dcl45 > dcl_target and newspar < 1.0:  # Calculating the hinge location of the flap if only the inner flap is used.
                     newspar = newspar + 0.01
-                    hldsize = HLDsize(root_chord=self.input.root_chord,
+                    hldsize2 = HLDsize(root_chord=self.input.root_chord,
                                       kink_position=self.input.kink_position,
                                       sweep=self.input.sweep_deg,
                                       dihedral=self.input.dihedral_deg,
@@ -229,8 +229,8 @@ class Model(Base):
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
                                       singleflap=True)
-                    dcl45 = hldsize.dcl_flap[0]
-                    dcl_target = hldsize.dcl_flap[1]
+                    dcl45 = hldsize2.dcl_flap[0]
+                    dcl_target = hldsize2.dcl_flap[1]
                 flap_count = 1
             else:
                 newspar = newspar2

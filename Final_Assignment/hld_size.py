@@ -188,7 +188,7 @@ class HLDsize(GeomBase):
 
     @Attribute
     def clmaxtrim(self):
-        return self.clmaxclean/self.trimfactor
+        return self.clmaxclean*self.trimfactor
 
     @Attribute
     def dclmaxtrimmed(self):
