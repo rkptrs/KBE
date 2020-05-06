@@ -1,8 +1,10 @@
 
-white_list = [" ", "\n", "\t"]
-separator = [" ", ",", "\t"]
+# this file contains functions used for reading airfoil coordinates from a text file
 
+white_list = [" ", "\n", "\t"]      # any of these are ignored before or after coordinates
+separator = [" ", ",", "\t"]        # any of these are taken as number separators
 
+# determine if line is empty
 def is_empty(line):
     empty = True
     if len(line) > 0:
@@ -11,35 +13,35 @@ def is_empty(line):
                 empty = False
     return empty
 
-
+# convert the string of one line into coordinates
 def read_coords(line):
     x, y = "", ""
-    sub_stage = 0
+    sub_stage = 0       # this means before fist coordinate
     for c in line:
-        if c in separator:
-            if x != "":
-                sub_stage = 1
-            if y != "":
+        if c in separator:  # check for separator symbol
+            if x != "":     # if x is not empty
+                sub_stage = 1   # change to reading y
+            if y != "":     # if y is not empty, end
                 break
         else:
-            if sub_stage == 0:
+            if sub_stage == 0:      # add to x if in mode 0
                 x = x + c
-            elif sub_stage == 1:
+            elif sub_stage == 1:    # add to y if reading y
                 y = y + c
     return float(x), float(y)
 
 
 def get_airfoil(name):
     f = open("airfoils/" + name + ".txt")
-    mode = "unknown"
+    mode = "unknown"        # two types of files are accepted, mode stores this information
 
     found_first = False
     line = f.readline()
-    while not found_first:
+    while not found_first:  # read lines until first coordinate is found
         if is_empty(line):
             line = f.readline()
         else:
-            x, y = read_coords(line)
+            x, y = read_coords(line)    # if first x is small then mode is normal, otherwise reversed
             if x < 0.1:
                 mode = "normal"
             if x > 0.9:
