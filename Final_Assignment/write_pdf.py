@@ -18,7 +18,7 @@ def write_list(pdf, title, position, names, values, units):
         pdf.cell(200, 6, txt=value, ln=1, align='L')        # write value + unit
 
 
-def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection):
+def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection, alpha_stall, flap_count):
     pdf = FPDF()        # create a PDF and add a page
     pdf.add_page()
 
@@ -51,9 +51,11 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
     write_list(pdf, "Input parameters:", (20, list_y), names, values, units)        # call the function defined above
 
     # Make output list
-    names = ["Cl_max of airfoil", "Delta Cl_max", "Flap hinge location", "Flap deflection"]
-    values = [round(cl_max_airfoil, 3), round(Delta_cl_max, 3), round(flap_hinge_location, 3), round(flap_deflection, 3)]
-    units = ["", "", "x/c", "deg"]
+    names = ["Cl_max of airfoil", "Delta Cl_max", "Flap hinge location", "Flap deflection", "Stall AoA", "Flaps per wing"]
+    values = [cl_max_airfoil, Delta_cl_max, flap_hinge_location, flap_deflection, alpha_stall, flap_count]
+    for i in range(len(values)):
+        values[i] = round(values[i], 4)
+    units = ["", "", "x/c", "deg", "deg", ""]
     write_list(pdf, "Output parameters:", (110, list_y), names, values, units)
 
     # save PDF into the appropriate folder, name includes input planform name and date for some organization
