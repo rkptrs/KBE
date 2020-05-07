@@ -26,8 +26,8 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform2')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
@@ -294,7 +294,9 @@ class Model(Base):
                              quantify=len(self.wingParts) - 1, color=self.input.colour, mesh_deflection=v.md,           # -1 is to not include the fuselage
                              hidden=self.hideLeftWing)
 
-    @Part(parse=False)
+    # This function intersects the wing and the flap solids of the inner flap section with a plane in order to get an
+    # airfoil of both the wing and the flap. This is used for to draw the airfoil in the output PDF
+    @Attribute
     def pdfWingSection(self):
         plane = Plane(reference=Point(0, self.input.fuselage_radius/2+self.input.kink_position/2, 0),
                       normal=Vector(0, 1, 0))
@@ -305,6 +307,7 @@ class Model(Base):
         else:
             return airfoil
 
+    # The curves obtained with the pdfWingSection are converted into lists of coordinates that can be used for the drawing
     @Attribute
     def pdfCoordinates(self):
         coordinates = []
@@ -326,7 +329,7 @@ class Model(Base):
     def exportPdf(self):
         write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
                   self.planform_file_name, self.flapDeflection, self.clMax[1], self.flapCount, self.cl_max_wing,
-                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.hldSize.area1, self.hldSize.area2, self.pdfCoordinates)
+                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.newSpar[2], self.pdfCoordinates)
         return "Done"
 
     @Part

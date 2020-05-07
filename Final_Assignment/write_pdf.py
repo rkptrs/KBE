@@ -24,7 +24,7 @@ def write_list(pdf, title, position, names, values, units):
 
 
 def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection, alpha_stall,
-              flap_count, cl_input, mach, kink_chord, tip_chord, area1, area2, coordinates):
+              flap_count, cl_input, mach, kink_chord, tip_chord, area, coordinates):
     pdf = FPDF()        # create a PDF and add a page
     pdf.add_page()
 
@@ -72,9 +72,9 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
 
     # Make output list
     names = ["Cl_max clan", "Delta Cl_max", "Flap hinge location", "Flap deflection", "Stall AoA", "Flaps per wing",
-             "Inner flap area", "Outer flap area"]
-    values = [cl_max_airfoil, Delta_cl_max, flap_hinge_location, flap_deflection, alpha_stall, flap_count, area1, area2]
-    units = ["", "", "x/c", "deg", "deg", "", "m^2", "m^2"]
+             "Flapped wing area"]
+    values = [cl_max_airfoil, Delta_cl_max, flap_hinge_location, flap_deflection, alpha_stall, flap_count, area]
+    units = ["", "", "x/c", "deg", "deg", "", "m^2"]
     write_list(pdf, "Output parameters:", (110, list_y), names, values, units)
 
     # Other parameters list

@@ -31,11 +31,11 @@ Lastly, some of the input parameters for hld design have been set to defaults. T
 
 Some notes for the airfoil files:
 
-	-Some surfaces are wrinkled if there are too few airfoil coordinates, therefore the minimum amount of coordinates
-	    for the airfoils is set at 50. If a lower number is given as input, an error is raised.
+	-In order to ensure a good quality of the geometry, the minimum required amount of airfoil coordinates is 50.
+	    If a lower number is given as input, an error is raised.
 	-Fowler flaps can not be used with cusp trailing edges. If such an airfoil is given as input, the calculations will
 	    still work, but the application will not output a valid geometry.
 	-Airfoil coordinate files can be either of the two common formats (Selig or Lednicer),
 	    it is however recommended to have the LE strictly at (0, 0) and the TE at (1, 0).
-	    Do not include any header in the file, blank lines are fine in anywhere, use comma space or tab
+	    Do not include any header in the file, blank lines are fine anywhere, use comma space or tab
 	    for separating the x and y coordinates.
