@@ -91,7 +91,7 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
 
     # Draw airfoil
     x, y = [], []
-    for section in coordinates:
+    for section in coordinates:             # go through coordinates to find maximums for normalization
         for i in range(len(section)):
             x.append(section[i][0])
             y.append(section[i][1])
@@ -101,19 +101,18 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
 
     for section in coordinates:
         x, y = [], []
-        for i in range(len(section)):
+        for i in range(len(section)):               # normalize coordinates
             x.append((section[i][0] - xs)/chord)
             y.append((section[i][1] - ys)/chord)
 
         for i in range(len(x)-1):
             x0, y0 = 30, 210
-            factor = 150
-            if True:
-                x1 = x[i]*factor
-                y1 = y[i]*factor
-                x2 = x[i+1]*factor
-                y2 = y[i+1]*factor
-                pdf.line(x0+x1, y0-y1, x0+x2, y0-y2)
+            factor = 150                            # size of airfoil in pixels
+            x1 = x[i]*factor
+            y1 = y[i]*factor
+            x2 = x[i+1]*factor
+            y2 = y[i+1]*factor
+            pdf.line(x0+x1, y0-y1, x0+x2, y0-y2)    # draw line between all consecutive coordinates
 
     # save PDF into the appropriate folder, name includes input planform name and date for some organization
     pdf.output("pdf_out/"+planform_file_name+"_"+str(datetime.datetime.today())[:10]+".pdf")
