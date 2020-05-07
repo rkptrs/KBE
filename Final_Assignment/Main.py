@@ -119,7 +119,7 @@ class Model(Base):
 
             return cltotlist[-1], aoa
         else:
-            return self.cl_max_wing, 0.0
+            return self.cl_max_wing, "Unknown"
 
     # The avl surfaces and avl configuration are determined here
     @Part
