@@ -287,7 +287,7 @@ class Model(Base):
     @Attribute
     def exportPdf(self):
         write_pdf(self.input, self.clMax, self.input.clmax - self.clMax, self.flapHingeLocation,
-                  self.planform_file_name, self.flapDeflection)
+                  self.planform_file_name, self.flapDeflection, 10, self.flapCount)
         return "Done"
 
     @Part
