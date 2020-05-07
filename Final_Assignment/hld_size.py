@@ -165,55 +165,58 @@ class HLDsize(GeomBase):
 
 
     @Attribute
-    def sf1(self):
+    def sf1(self):      # flapped area of the first flap
         if self.flap1stop <= self.kinkloc:
             sf1 = (self.chordfuselage+self.chordflapstop)*(self.flap1stop-self.fuselageloc)*self.span
-        elif self.flap1stop > self.kinkloc:
+        elif self.flap1stop > self.kinkloc: # the option was added to have the first flap end outboard of the kink.
+                                            # this option was not used in the current version of the app
             sf1 = (self.chordfuselage+self.chordkink)*(self.kinkloc-self.fuselageloc)*self.span + (self.chordkink+self.chordflapstop)*(self.flap1stop-self.kinkloc)*self.span
         return sf1
 
     @Attribute
-    def sf2(self):
+    def sf2(self):      # flapped area of the second flap
         if self.flap2start < self.kinkloc:
             sf2 = (self.chordflapstart + self.chordkink) * (self.kinkloc - self.flap2start) * self.span  + (
                         self.chordkink + self.chordaileron) * (self.aileronloc - self.kinkloc) * self.span
-        elif self.flap2start >= self.kinkloc:
+        elif self.flap2start >= self.kinkloc:   # the option was added to have the second flap start inboard of the kink.
+                                                # this option was not used in the current version of the app
             sf2 = (self.chordflapstart + self.chordaileron) * (self.aileronloc - self.flap2start) * self.span
         return sf2
 
     @Attribute
     def sf(self):
-        if self.singleflap:
+        if self.singleflap: # gives the option to only use the inner flap
             sf = self.sf1
-        elif not self.singleflap:
+        elif not self.singleflap: # total of the two flapped areas
             sf = self.sf1+self.sf2
         return sf
 
     @Attribute
-    def clmaxtrim(self):
+    def clmaxtrim(self):    # correction for trimming
         return self.clmaxclean*self.trimfactor
 
     @Attribute
-    def noflap(self):
+    def noflap(self):       # Check if clean wing alone is enough to attain required clmax
         if self.clmaxtrim >= self.clmaxflapped:
             return True
         else:
             return False
 
     @Attribute
-    def dclmaxtrimmed(self):
+    def dclmaxtrimmed(self):    # some more corrections and calculation of delta_clmax
         return 1.05*(self.clmaxflapped-self.clmaxtrim)
 
     @Attribute
-    def klambda(self):
+    def klambda(self):          # factor correcting for sweep of deflected flaps
         return (1-0.08*cos(self.avgsweep1_4)**2)*cos(self.avgsweep1_4)**(3/4)
 
     @Attribute
-    def dclmax(self):
+    def dclmax(self):           # delta_clmax that the flapped area should attain
         return self.dclmaxtrimmed*self.klambda*self.s/self.sf
 
     @Attribute
-    def dcl_flap(self):
+    def dcl_flap(self):  # calculation of the delta_cl the flap should attain (dcltarget) and the actual delta_cl
+                         # that the different flaps can attain (dcl45)
         if self.flaptype == "Plain":
             k = K(self.cfc, 1)
             dcltarget = (1 / k) * self.dclmax
@@ -234,7 +237,7 @@ class HLDsize(GeomBase):
             return error('Flap name not recognised')
 
     @Attribute
-    def can_attain(self):
+    def can_attain(self):   # checking if the selected flap can attain the required cl
         if self.dcl_flap[0] >= self.dcl_flap[1]:
             attain_flap = True
         elif self.dcl_flap[0] < self.dcl_flap[1]:
@@ -242,94 +245,6 @@ class HLDsize(GeomBase):
             error('With the chosen flap type and rear spar location, the wing cannot attain the specified CLmax.'
                   'Choose a different flap type, move the rear spar forward or increase the maximum deflection angle of the flap')
         return attain_flap
-
-
-
-
-
-# class Plainflap(GeomBase):
-#     angle = Input()
-#     @Part
-#     def hldsize(self):
-#         return HLDsize()
-#
-#     @Attribute
-#     def k(self):
-#         return K(self.hldsize.cfc,1)
-#
-#     @Attribute
-#     def dcltarget(self):
-#         return (1/self.k)*self.hldsize.dclmax
-#
-#     @Attribute
-#     def dcl45(self):
-#         return cldf(self.hldsize.cfc,self.hldsize.t_c)*radians(self.angle)*Kprime(self.angle,self.hldsize.cfc)
-#
-# class Singleslot(GeomBase):
-#     angle = Input()
-#     @Part
-#     def hldsize(self):
-#         return HLDsize()
-#
-#     @Attribute
-#     def K(self):
-#         return K(self.hldsize.cfc,2)
-#
-#     @Attribute
-#     def dcltarget(self):
-#         return (1/self.K)*self.hldsize.dclmax
-#
-#     @Attribute
-#     def dcl45(self):
-#         return self.hldsize.clalpha * adf(self.angle,self.hldsize.cfc)*radians(self.angle)
-#
-#
-# class Fowler(GeomBase):
-#     angle = Input()
-#     @Part
-#     def hldsize(self):
-#         return HLDsize()
-#
-#     @Attribute
-#     def K(self):
-#         return K(self.hldsize.cfc,2)
-#
-#     @Attribute
-#     def dcltarget(self):
-#         return (1/self.K)*self.hldsize.dclmax
-#
-#     @Attribute
-#     def clalphaf(self):
-#         return self.hldsize.clalpha*(1+self.hldsize.cfc)
-#
-#     @Attribute
-#     def dcl45(self):
-#         return self.clalphaf * adf(self.angle,self.hldsize.cfc)*radians(self.angle)
-#
-#
-# class Krueger(GeomBase):
-#
-#     @Part
-#     def hldsize(self):
-#         return HLDsize()
-#
-#     @Attribute
-#     def dclkr(self):
-#         dclkrmax = 0
-#         for i in range(0,30):
-#             df = radians(i)
-#             cprime = 1 + self.hldsize.frontspar * cos(df)
-#             dclk = cldelta(self.hldsize.cfc)*i*cprime
-#             if dclk > dclkrmax:
-#                 dclkrmax = dclk
-#         return dclkrmax
-
-
-
-
-
-
-
 
 
 
