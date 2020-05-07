@@ -1,0 +1,17 @@
+wing_span = 20
+root_chord = 10
+taper_inner = 1
+taper_outer = 1
+kink_position = 9
+flap_gap = 2
+sweep = 40
+dihedral = 15
+front_spar = 0.45
+rear_spar = 0.9
+outer_flap_limit = 0.9	# y/(b/2)
+fuselage_radius = 5
+clmax = 4.0
+twist = 10
+speed = 1000
+airfoil_name = ex1
+flap_type = Plain
