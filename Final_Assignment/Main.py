@@ -192,7 +192,7 @@ class Model(Base):
                                   singleflap=False)
                 dcl45 = hldsize.dcl_flap[0]
                 dcl_target = hldsize.dcl_flap[1]
-            flaparea = hldsize.sf*(1-newspar+0.01)
+            flaparea = self.hldSize.sf1*(1-newspar+0.01)
         else:
             newspar = self.input.rear_spar + 0.01
             flaparea = self.hldSize.sf*(1-self.input.rear_spar)

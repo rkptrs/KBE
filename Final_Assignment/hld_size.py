@@ -233,6 +233,8 @@ class HLDsize(GeomBase):
             dcltarget = (1 / k) * self.dclmax
             dcl45 = self.clalpha * adf(self.angle_max, self.cfc) * radians(self.angle_max)
             return dcl45, dcltarget
+        elif self.flaptype == "None":
+            return 0, 0
         else:
             return error('Flap name not recognised')
 
