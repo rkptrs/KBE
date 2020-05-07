@@ -164,7 +164,7 @@ class Model(Base):
     def newSpar(self):
         if self.hldSize.noflap:
             error('The wing can already attain the required CLmax by itself, no flaps are required')
-            return self.input.rear_spar, 0
+            return self.input.rear_spar, 0, 0
         flap_count = 2
         if self.hldSize.can_attain:
             dcl45 = self.hldSize.dcl_flap[0]
@@ -192,8 +192,10 @@ class Model(Base):
                                   singleflap=False)
                 dcl45 = hldsize.dcl_flap[0]
                 dcl_target = hldsize.dcl_flap[1]
+            flaparea = hldsize.sf*(1-newspar+0.01)
         else:
             newspar = self.input.rear_spar + 0.01
+            flaparea = self.hldSize.sf*(1-self.input.rear_spar)
         newspar2 = newspar
         # If the spar location is more than 0.95, the following code calculates if the inner flap is enough to attain
         # the desired CLmax
@@ -245,15 +247,17 @@ class Model(Base):
                     dcl45 = hldsize2.dcl_flap[0]
                     dcl_target = hldsize2.dcl_flap[1]
                 flap_count = 1
+                flaparea = hldsize2.sf * (1 - newspar + 0.01)
             else:
                 newspar = newspar2
+                flaparea = hldsize.sf*(1-newspar2+0.01)
 
             if newspar > 0.99:
                 #flap_count = 0
                 error("The size of the flap might be too small to justify its use. "
                       "Consider a small increase in wing area instead.")
 
-        return newspar - 0.01, flap_count
+        return newspar - 0.01, flap_count, flaparea
 
     # Results of the HLD sizing are given by the three attributes bellow:
     @Attribute
