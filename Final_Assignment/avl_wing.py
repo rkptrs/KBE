@@ -155,17 +155,7 @@ class Avl_Wing(GeomBase):
 class Avl_analysis(avl.Interface):
     aircraft = Input(in_tree=True)
     case_settings = Input()
-    # name = Input("wing")
-    # span = Input()
-    # taper_outer = Input()
-    # le_sweep = Input()
-    # twist = Input()
-    # airfoil = Input()
-    # chord_root = Input()
-    # chord_kink = Input()
-    # kink_position = Input()
-    # dihedral_deg = Input()
-    # mach = Input(0.01)
+
 
     @Attribute
     def configuration(self):
@@ -192,70 +182,7 @@ class Avl_analysis(avl.Interface):
         return {result['Totals']['CLtot']
                 for case_name, result in self.results.items()}
 
-    # @Attribute
-    # def clmax(self):
-    #     Avl_aircraft = Wing(name=self.name,
-    #                span=self.span,
-    #                taper_outer=self.taper_outer,
-    #                le_sweep=self.le_sweep,
-    #                twist=self.twist,
-    #                airfoil=self.airfoil,
-    #                chord_root=self.chord_root,
-    #                chord_kink=self.chord_kink,
-    #                kink_positionm=self.kink_position,
-    #                dihedral_deg=self.dihedral_deg,
-    #                mach=self.mach
-    #                )
-    #     clnorm = 0
-    #     aoa = 0
-    #     cltotlist = []
-    #     while clnorm < self.clmaxfoil:
-    #         cases = [('fixed_aoa', {'alpha': aoa})]
-    #         analysis = Avl_analysis(aircraft=Avl_aircraft,
-    #                                 case_settings=cases,
-    #                                 clmaxfoil=0.5)
-    #
-    #         clnorm = list(analysis.strip)[0]
-    #         cltot = list(analysis.cltot)[0]
-    #         aoa = aoa + 0.5
-    #         cltotlist.append(cltot)
-    #     return cltotlist[-2]
 
-
-
-# if __name__ == '__main__':
-#     air = Wing(name = 'wing',
-#                     span = 50,
-#                     taper_ratio = 1,
-#                     le_sweep = 0,
-#                     twist = 0,
-#                     airfoil = '2024',
-#                     chord_root = 5,
-#                     chord_kink = 5,
-#                     kink_position = 0.9,
-#                     dihedral_deg = 0,
-#                     mach = 0.1
-#                    )
-#     #['wing']['cl_norm']
-#     # cases = [('fixed_aoa', {'alpha':2})]
-#     # analysis = Avl_analysis(aircraft=air,
-#     #                         case_settings=cases)
-#     clnorm = 0.1
-#     aoa = 0
-#     clnormlist = []
-#     cltotlist = []
-#     while clnorm < 0.2:
-#         cases = [('fixed_aoa', {'alpha':aoa})]
-#         analysis = Avl_analysis(aircraft=air,
-#                                 case_settings=cases)
-#
-#         clnorm = list(analysis.strip)[0]
-#         cltot = list(analysis.cltot)[0]
-#         aoa = aoa+0.5
-#         clnormlist.append(clnorm)
-#         cltotlist.append(cltot)
-#
-#     display(analysis)
 
 
 

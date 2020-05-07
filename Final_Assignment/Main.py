@@ -27,7 +27,7 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1.1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
@@ -117,9 +117,9 @@ class Model(Base):
                     if clnorm > self.xfoil[k]:
                         stall = stall + 1
 
-            return cltotlist[-1]
+            return cltotlist[-1], aoa
         else:
-            return self.cl_max_wing
+            return self.cl_max_wing, 0.0
 
     # The avl surfaces and avl configuration are determined here
     @Part
@@ -152,7 +152,7 @@ class Model(Base):
                        fuselage_radius=self.input.fuselage_radius,
                        flap_gap=self.input.flap_gap,
                        airfoilCoordinates=self.input.airfoil_coordinates,
-                       clmaxclean=self.clMax,
+                       clmaxclean=self.clMax[0],
                        clmaxflapped=self.input.clmax,
                        flaptype=self.input.flap_type,
                        singleflap=False, hidden=True)
@@ -186,7 +186,7 @@ class Model(Base):
                                   fuselage_radius=self.input.fuselage_radius,
                                   flap_gap=self.input.flap_gap,
                                   airfoilCoordinates=self.input.airfoil_coordinates,
-                                  clmaxclean=self.clMax,
+                                  clmaxclean=self.clMax[0],
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
                                   singleflap=False)
@@ -213,7 +213,7 @@ class Model(Base):
                                fuselage_radius=self.input.fuselage_radius,
                                flap_gap=self.input.flap_gap,
                                airfoilCoordinates=self.input.airfoil_coordinates,
-                               clmaxclean=self.clMax,
+                               clmaxclean=self.clMax[0],
                                clmaxflapped=self.input.clmax,
                                flaptype=self.input.flap_type,
                                singleflap=True)
@@ -238,7 +238,7 @@ class Model(Base):
                                       fuselage_radius=self.input.fuselage_radius,
                                       flap_gap=self.input.flap_gap,
                                       airfoilCoordinates=self.input.airfoil_coordinates,
-                                      clmaxclean=self.clMax,
+                                      clmaxclean=self.clMax[0],
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
                                       singleflap=True)
@@ -294,7 +294,7 @@ class Model(Base):
     # not after each time something is changed. sort of a "save" function
     @Attribute
     def exportPdf(self):
-        write_pdf(self.input, self.clMax, self.input.clmax - self.clMax, self.flapHingeLocation,
+        write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
                   self.planform_file_name, self.flapDeflection)
         return "Done"
 
