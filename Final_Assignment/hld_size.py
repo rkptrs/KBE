@@ -2,15 +2,15 @@ from math import *
 
 from parapy.core import *
 from parapy.geom import *
-from hld_functions import K, cldf, Kprime, adf, cldelta
-import warnings
-from tkinter import Tk, mainloop, X, messagebox
+from hld_functions import K, cldf, Kprime, adf
+from tkinter import Tk, messagebox
 import numpy as np
+
+# The methods used in this class are taken from Roskam
+
 class HLDsize(GeomBase):
 
-
-    ##Inputs##
-
+    # Inputs #
     root_chord = Input()
     kink_position = Input()
     sweep = Input()
@@ -30,133 +30,136 @@ class HLDsize(GeomBase):
     trimfactor = Input(1.1)
     flaptype = Input()
     singleflap = Input()
-    angle_max = Input(45)
+    angle_max = Input(45) # The maximum deflection angle is set to 45 by default. This is a very common maximum deflection angle
+                          # To limit the amount of user inputs, this value was set, but it can be changed by the user.
 
     @Attribute
-    def t_c(self):
+    def t_c(self):        # Calculates the maximum thickness to chord ratio of the airfoil
         y_values = []
         for c in self.airfoilCoordinates:
             y_values.append(c[2])
         return max(y_values) - min(y_values)
 
     @Attribute
-    def fuselageloc(self):
+    def fuselageloc(self): # Calculates the spanwise location of the fuselage
         return self.fuselage_radius/self.span
 
+    # This code was written based on six coordinates, which together form the geometry of the wing.
+    # The following attributes convert the inputs to these coordinates
+
     @Attribute
-    def coor1(self):
+    def coor1(self):        # leading edge of the root
         return [0, 0, 0]
 
     @Attribute
-    def coor2(self):
+    def coor2(self):        # trailing edge of the root
         return [self.root_chord, 0, 0]
 
     @Attribute
-    def coor3(self):
+    def coor3(self):        # leading edge of the kink
         return [self.kink_position*np.tan(radians(self.sweep)), self.kink_position, self.kink_position*np.tan(radians(self.dihedral))]
 
     @Attribute
-    def coor4(self):
+    def coor4(self):        # trailing edge of the kink
         return [self.kink_position * np.tan(radians(self.sweep)) + self.root_chord*self.taper_inner, self.kink_position,
                 self.kink_position * np.tan(radians(self.dihedral))]
 
     @Attribute
-    def chordkink(self):
+    def chordkink(self):    # chord of the kink
         return self.coor4[0] - self.coor3[0]
 
     @Attribute
-    def coor5(self):
+    def coor5(self):        # leading edge of the tip
         return [self.wing_span * np.tan(radians(self.sweep)),
                 self.wing_span,
                 self.wing_span * np.tan(radians(self.dihedral))]
 
     @Attribute
-    def coor6(self):
+    def coor6(self):        # trailing edge of the kink
         return [self.wing_span * np.tan(radians(self.sweep)) + self.chordkink*self.taper_outer,
                 self.wing_span,
                 self.wing_span * np.tan(radians(self.dihedral))]
 
     @Attribute
-    def chordroot(self):
+    def chordroot(self):    # renaming to match nomenclature in class
         return self.root_chord
 
     @Attribute
-    def chordkink(self):
-        return self.coor4[0]-self.coor3[0]
-    @Attribute
-    def chordtip(self):
+    def chordtip(self):     # tip chord
         return self.coor6[0]-self.coor5[0]
 
 
     @Attribute
-    def span(self):
+    def span(self):         # renaming to match nomenclature in class
         return (self.coor5[1]-self.coor1[1])
 
     @Attribute
-    def kinkloc(self):
+    def kinkloc(self):      # spanwise location of the kink
         return (self.coor3[1]-self.coor1[1])/self.span
 
     @Attribute
-    def flap1stop(self):
+    def flap1stop(self):    # spanwise location of the end of the first flap
         return self.kinkloc
 
     @Attribute
-    def flap2start(self):
+    def flap2start(self):   # spanwise location of the start of the second flap
         return self.flap1stop + self.flap_gap/self.span
 
     @Attribute
-    def chordfuselage(self):
+    def chordfuselage(self):    # chord at the position of the fuselage
         return self.chordroot - (self.chordroot - self.chordkink) * (self.fuselageloc/self.kinkloc)
 
     @Attribute
-    def chordaileron(self):
+    def chordaileron(self):     # chord at the position of the aileron
         return self.chordkink - (self.chordkink- self.chordtip) * ((self.aileronloc-self.kinkloc) / (1-self.kinkloc))
 
     @Attribute
-    def chordflapstop(self):
+    def chordflapstop(self):    # chord at the position of the end of the first flap.
         if self.flap1stop <= self.kinkloc:
             chordflapstop = self.chordroot - (self.chordroot - self.chordkink) * (self.flap1stop / self.kinkloc)
-        elif self.flap1stop > self.kinkloc:
+        elif self.flap1stop > self.kinkloc: # the option was added to have the first flap end outboard of the kink.
+                                            # this option was not used in the current version of the app
             chordflapstop = self.chordkink - (self.chordkink - self.chordtip) * ((self.flap1stop-self.kinkloc) / (1-self.kinkloc))
         return chordflapstop
 
     @Attribute
-    def chordflapstart(self):
+    def chordflapstart(self):   #chord at the position of the start of the second flap
         if self.flap2start <= self.kinkloc:
             chordflapstart = self.chordroot - (self.chordroot - self.chordkink) * (self.flap2start / self.kinkloc)
-        elif self.flap2start > self.kinkloc:
+        elif self.flap2start > self.kinkloc:    # the option was added to have the second flap start inboard of the kink.
+                                                # this option was not used in the current version of the app
             chordflapstart = self.chordkink - (self.chordkink - self.chordtip) * (
                         (self.flap2start - self.kinkloc) / (1 - self.kinkloc))
         return chordflapstart
 
     @Attribute
-    def cfc(self):
+    def cfc(self): # ratio of flap chord over chord
         return 1 - self.rearspar
 
     @Attribute
-    def area1(self):
+    def area1(self):    # area of the wing inboard of the kink
         return (self.chordroot + self.chordkink) * sqrt(
             self.coor3[1] ** 2 + self.coor3[2] ** 2)
 
     @Attribute
-    def area2(self):
+    def area2(self):    # area of the wing outboard of the kink
         return (self.chordkink + self.chordtip) * sqrt(
             (self.coor5[1] - self.coor3[1]) ** 2 + (self.coor5[2] - self.coor3[2]) ** 2)
 
     @Attribute
-    def s(self):
+    def s(self):        # total wing area of one wing
         return self.area1 + self.area2
 
     @Attribute
-    def sweep1_4_1(self):
+    def sweep1_4_1(self):  # quarter chord sweep of the wing inboard of the kink
         return atan((self.coor3[0]+0.25*self.chordkink-self.coor1[0]-0.25*self.chordroot)/(self.coor3[1]-self.coor1[1]))
 
     @Attribute
-    def sweep1_4_2(self):
+    def sweep1_4_2(self):   # quarter chord sweep of the wing outboard of the kink
         return atan((self.coor5[0]+0.25*self.chordtip-self.coor3[0]-0.25*self.chordkink)/(self.coor5[1]-self.coor3[1]))
 
     @Attribute
-    def avgsweep1_4(self):
+    def avgsweep1_4(self):  #average sweep of the full wing
         return (self.sweep1_4_1*self.area1+self.sweep1_4_2*self.area2)/self.s
 
 
@@ -191,9 +194,14 @@ class HLDsize(GeomBase):
         return self.clmaxclean*self.trimfactor
 
     @Attribute
-    def dclmaxtrimmed(self):
+    def noflap(self):
         if self.clmaxtrim >= self.clmaxflapped:
-            error('The clean wing can already attain the required CLmax, no flaps are required.')
+            return True
+        else:
+            return False
+
+    @Attribute
+    def dclmaxtrimmed(self):
         return 1.05*(self.clmaxflapped-self.clmaxtrim)
 
     @Attribute

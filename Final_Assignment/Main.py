@@ -27,7 +27,7 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1.1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
@@ -37,11 +37,11 @@ class Model(Base):
             out = check_input(out, self.planform_file_name)
         return out
 
-    def reynoldsNumber(self, chord):
+    def reynoldsNumber(self, chord):                    #Calculation of the Reynolds number, is used for Xfoil
         return self.input.speed * chord / 1.5111E-5
 
     @Attribute
-    def mach(self):
+    def mach(self):                                     #Calculation of the Mach number, used for both the AVL and Xfoil analyses
         return self.input.speed / 343
 
     # Sizing of HLD starts here
@@ -49,33 +49,38 @@ class Model(Base):
     @Attribute
     def xfoil(self):
         clmaxfoil = np.zeros(20)
-        p_bar = bar()
-        p_bar.update(0)
-        for j in range(20):
+        p_bar = bar() #used for the progress bar
+        p_bar.update(0) #used for the progress bar
+        for j in range(20): # 20 cross sections are taken along the span
             y = j / 20 * self.input.wing_span
-            if y < self.input.kink_position:
+            if y < self.input.kink_position: #calculation of the chords inboard of the kink
                 chord = self.input.root_chord - (self.hldSize.chordroot - self.hldSize.chordkink) * (
                         y / self.input.kink_position)
-            else:
+            else:       #calculation of the chords outboard of the kink
                 y1 = y - self.input.kink_position
                 span = self.input.wing_span - self.input.kink_position
                 chord = self.hldSize.chordkink - (self.hldSize.chordkink - self.hldSize.chordtip) * (y1 / span)
-            xfoil_analysis = XfoilAnalysis(lifting_surface=self.avlWing.surface1,
-                                           cutting_plane_span_fraction=j / 20,
-                                           flydir=True,
-                                           reynolds_number=self.reynoldsNumber(chord),
-                                           root_section=self.avlWing.root_section,
-                                           tip_section=self.avlWing.kink_section,
-                                           mach=self.mach)
+            xfoil_analysis = XfoilAnalysis(lifting_surface=self.avlWing.surface1, #Surface of which xfoil takes its sections
+                                           cutting_plane_span_fraction=j / 20, #fraction along the span at which the section is taken
+                                           flydir=True, #if true, the section is taken parallel to the flight direction
+                                           reynolds_number=self.reynoldsNumber(chord), #Reynolds number at the specific chord
+                                           root_section=self.avlWing.root_section,  #root section
+                                           tip_section=self.avlWing.kink_section, # tip section
+                                           mach=self.mach) # mach number
 
             clmaxfoil[j] = xfoil_analysis.clmax
 
             p_bar.update(j * 5)
-        for k in range(20):
-            if k > 0:
+        for k in range(20):         # Sometimes one section has a significantly lower clmax than the rest of the wing.
+                                    # This is because of how the section is taken by xfoil and not because the clmax is actually lower there.
+            if k > 0:   #This function makes sure that these outliers are corrected
                 if clmaxfoil[k] > 1.2 * clmaxfoil[k - 1] or clmaxfoil[k] < 0.85 * clmaxfoil[k - 1]:
                     if clmaxfoil[k] > 1.2 * np.average(clmaxfoil) or clmaxfoil[k] < 0.85 * np.average(clmaxfoil):
                         clmaxfoil[k] = clmaxfoil[k - 1]
+            if k == 0:
+                if clmaxfoil[k] > 1.2 * clmaxfoil[k + 1] or clmaxfoil[k] < 0.85 * clmaxfoil[k + 1]:
+                    if clmaxfoil[k] > 1.2 * np.average(clmaxfoil) or clmaxfoil[k] < 0.85 * np.average(clmaxfoil):
+                        clmaxfoil[k] = clmaxfoil[k + 1]
         p_bar.update(100)
         p_bar.kill()
         return clmaxfoil
@@ -99,7 +104,7 @@ class Model(Base):
             aoa = 0
             cltotlist = []
             stall = 0
-
+            #The angle of attack is increased until any part of the wing has a higher CL than the CLmax of that section in Xfoil
             while stall < 1:
                 cases = [('fixed_aoa', {'alpha': aoa})]
                 analysis = Avl_analysis(aircraft=Avl_aircraft,
@@ -112,11 +117,11 @@ class Model(Base):
                     if clnorm > self.xfoil[k]:
                         stall = stall + 1
 
-            return cltotlist[-1]
+            return cltotlist[-1], aoa
         else:
-            return self.cl_max_wing
+            return self.cl_max_wing, 0.0
 
-    # cl distribution over the whole wing is computed here
+    # The avl surfaces and avl configuration are determined here
     @Part
     def avlWing(self):
         return Avl_Wing(span=self.input.wing_span,
@@ -147,21 +152,24 @@ class Model(Base):
                        fuselage_radius=self.input.fuselage_radius,
                        flap_gap=self.input.flap_gap,
                        airfoilCoordinates=self.input.airfoil_coordinates,
-                       clmaxclean=self.clMax,
+                       clmaxclean=self.clMax[0],
                        clmaxflapped=self.input.clmax,
                        flaptype=self.input.flap_type,
                        singleflap=False, hidden=True)
 
+
+    #If the flap can attain the desired CLmax with the hinge located at the rear spar location, this attribute will
+    #move the hinge line aft until the design can just attain the required CLmax
     @Attribute
     def newSpar(self):
+        if self.hldSize.noflap:
+            error('The wing can already attain the required CLmax by itself, no flaps are required')
+            return self.input.rear_spar, 0
         flap_count = 2
         if self.hldSize.can_attain:
             dcl45 = self.hldSize.dcl_flap[0]
             dcl_target = self.hldSize.dcl_flap[1]
             newspar = self.input.rear_spar
-
-            sf1 = self.hldSize.sf1
-            sf2 = self.hldSize.sf2
 
             while dcl45 > dcl_target and newspar < 1.0:
                 newspar = newspar + 0.01
@@ -178,7 +186,7 @@ class Model(Base):
                                   fuselage_radius=self.input.fuselage_radius,
                                   flap_gap=self.input.flap_gap,
                                   airfoilCoordinates=self.input.airfoil_coordinates,
-                                  clmaxclean=self.clMax,
+                                  clmaxclean=self.clMax[0],
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
                                   singleflap=False)
@@ -205,7 +213,7 @@ class Model(Base):
                                fuselage_radius=self.input.fuselage_radius,
                                flap_gap=self.input.flap_gap,
                                airfoilCoordinates=self.input.airfoil_coordinates,
-                               clmaxclean=self.clMax,
+                               clmaxclean=self.clMax[0],
                                clmaxflapped=self.input.clmax,
                                flaptype=self.input.flap_type,
                                singleflap=True)
@@ -230,7 +238,7 @@ class Model(Base):
                                       fuselage_radius=self.input.fuselage_radius,
                                       flap_gap=self.input.flap_gap,
                                       airfoilCoordinates=self.input.airfoil_coordinates,
-                                      clmaxclean=self.clMax,
+                                      clmaxclean=self.clMax[0],
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
                                       singleflap=True)
@@ -286,8 +294,8 @@ class Model(Base):
     # not after each time something is changed. sort of a "save" function
     @Attribute
     def exportPdf(self):
-        write_pdf(self.input, self.clMax, self.input.clmax - self.clMax, self.flapHingeLocation,
-                  self.planform_file_name, self.flapDeflection, 10, self.flapCount)
+        write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
+                  self.planform_file_name, self.flapDeflection)
         return "Done"
 
     @Part
