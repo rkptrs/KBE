@@ -26,7 +26,7 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
+    planform_file_name = Input('test_planform2')        # name of input file located in planforms folder, without ".txt"
     cl_max_wing = Input(1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 

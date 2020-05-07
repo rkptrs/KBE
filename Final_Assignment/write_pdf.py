@@ -24,7 +24,7 @@ def write_list(pdf, title, position, names, values, units):
 
 
 def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection, alpha_stall,
-              flap_count, cl_input, mach, kink_chord, tip_chord, area1, area2):
+              flap_count, cl_input, mach, kink_chord, tip_chord, area1, area2, coordinates):
     pdf = FPDF()        # create a PDF and add a page
     pdf.add_page()
 
@@ -83,10 +83,41 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
     units = ["", "m", "m"]
     write_list(pdf, "Other parameters", (110, 140), names, values, units)
 
+    # Write airfoil below
+    pdf.set_xy(20, 190)
+    pdf.set_font("Arial", "b", size=12)
+    name = "Cross section of airfoil with the flap system:"
+    pdf.cell(200, 6, txt=name, ln=1, align='L')
+
+    # Draw airfoil
+    x, y = [], []
+    for section in coordinates:
+        for i in range(len(section)):
+            x.append(section[i][0])
+            y.append(section[i][1])
+    xs = min(x)
+    ys = max(y)
+    chord = max(x) - xs
+
+    for section in coordinates:
+        x, y = [], []
+        for i in range(len(section)):
+            x.append((section[i][0] - xs)/chord)
+            y.append((section[i][1] - ys)/chord)
+
+        for i in range(len(x)-1):
+            x0, y0 = 30, 210
+            factor = 150
+            if True:
+                x1 = x[i]*factor
+                y1 = y[i]*factor
+                x2 = x[i+1]*factor
+                y2 = y[i+1]*factor
+                pdf.line(x0+x1, y0-y1, x0+x2, y0-y2)
+
     # save PDF into the appropriate folder, name includes input planform name and date for some organization
     pdf.output("pdf_out/"+planform_file_name+"_"+str(datetime.datetime.today())[:10]+".pdf")
 
-    print(type(area2))
 if __name__ == "__main__":
     inp = get_input("planforms/test_planform1.txt")
     write_pdf(inp, 1.2, 0.8, 0.5, "Test run", 45)

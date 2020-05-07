@@ -46,7 +46,7 @@ class Plain_flap_section(WingBase):    # class defining a section of the wing wi
                                      mesh_deflection=v.md, color="green"))
         return lines
 
-    @Part(parse=False)
+    @Attribute
     def flapSplitSurface(self):     # a surface used to split the wing solid into flap and wing is defined here
         curves = []
         for i in range(2):
@@ -56,15 +56,15 @@ class Plain_flap_section(WingBase):    # class defining a section of the wing wi
         return RuledSurface(curves[0], curves[1], mesh_deflection=v.md, color="red")                                     # small amount to guarantee intersection
 
     @Attribute                      # wing solid is split into wing and flap using the flap split surface defined above
-    def wing_parts(self):
+    def wingParts(self):
         return SplitSolid(self.wingSolid, self.flapSplitSurface, mesh_deflection=v.md)
 
     @Part
-    def main_wing(self):            # main wing is second in the list of the split solids
-        return Solid(self.wing_parts.solids[1], mesh_deflection=v.md)
+    def mainWing(self):            # main wing is second in the list of the split solids
+        return Solid(self.wingParts.solids[1], mesh_deflection=v.md)
 
     @Part
     def flap(self):                 # flap solid is first in the list of split solids
-        return RotatedShape(self.wing_parts.solids[0], self.hingePoints[0],                     # flap must also be rotated around hinge line
+        return RotatedShape(self.wingParts.solids[0], self.hingePoints[0],  # flap must also be rotated around hinge line
                             p2v(self.hingePoints[0]) - p2v(self.hingePoints[1]),
                             angle=-self.flap_deflection*np.pi/180, mesh_deflection=v.md)
