@@ -304,5 +304,5 @@ class Model(Base):
     STEPWriter()
 
 if __name__ == "__main__":
-    obj = Model()
+    obj = Model(label='HLD sizing application')
     display(obj)
