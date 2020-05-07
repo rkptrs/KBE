@@ -126,8 +126,8 @@ class Fuselage(Base):
 
     @Part(parse=False)
     def cylinder(self):
-        surf = CylindricalSurface(radius=self.radius,
+        surf = Cylinder(radius=self.radius,
                                   height=self.root_chord * 3,
                                   position=rotate(XOY, "y", np.pi / 2))
-        return TranslatedSurface(surf, Vector(-self.root_chord, 0, self.radius))
+        return TranslatedShape(surf, Vector(-self.root_chord, 0, self.radius))
 

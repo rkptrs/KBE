@@ -1,3 +1,4 @@
+from parapy.exchange import STEPWriter
 from parapy.geom import *
 from parapy.core import *
 from parapy.gui import display
@@ -25,9 +26,9 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform2')        # name of input file located in planforms folder, without ".txt"
+    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
     cl_max_wing = Input(1.1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
-    hideLeftWing = Input(True)                          # Set to true to only display the right wing
+    hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
     def input(self):
@@ -278,7 +279,7 @@ class Model(Base):
     @Part
     def mirror(self):
         return MirroredShape(self.wingParts[child.index], XOY, vector1=Vector(0, 0, 1), vector2=Vector(1, 0, 0),
-                             quantify=len(self.wingParts) - 1, color=self.input.colour, mesh_deflection=v.md,
+                             quantify=len(self.wingParts) - 1, color=self.input.colour, mesh_deflection=v.md,           # -1 is to not include the fuselage
                              hidden=self.hideLeftWing)
 
     # This is an attibute that when evaluated exports a pdf. this means that the user can export pdf when desired and
@@ -289,6 +290,10 @@ class Model(Base):
                   self.planform_file_name, self.flapDeflection)
         return "Done"
 
+    @Part
+    def exportSTEP(self):
+        return STEPWriter(trees=[self.wing, self.mirror])
+    STEPWriter()
 
 if __name__ == "__main__":
     obj = Model()
