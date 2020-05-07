@@ -67,7 +67,7 @@ class XfoilAnalysis(GeomBase):
 
 
     @Part
-    def section(self):
+    def section(self):   # intersection of the lifting surface and the plane located at the specified spanwise location
         return IntersectedShapes(shape_in=self.lifting_surface,
                                  tool=self.wing_cutting_plane)
 
