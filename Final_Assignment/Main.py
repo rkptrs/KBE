@@ -28,7 +28,8 @@ import numpy as np
 class Model(Base):
     planform_file_name = Input('RJ_100')        # name of input file located in planforms folder, without ".txt"
     cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
-    hideLeftWing = Input(False)                          # Set to true to only display the right wing
+    hideLeftWing = Input(False)  # Set to true to only display the right wing
+
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
     def input(self):
@@ -147,7 +148,7 @@ class Model(Base):
                        taper_outer=self.input.taper_outer,
                        wing_span=self.input.wing_span,
                        frontpar=self.input.front_spar,
-                       rearspar=self.input.rear_spar,
+                       rearspar=self.newHinge[0],
                        aileronloc=self.input.outer_flap_lim,
                        fuselage_radius=self.input.fuselage_radius,
                        flap_gap=self.input.flap_gap,
@@ -158,23 +159,46 @@ class Model(Base):
                        singleflap=False, hidden=True,
                        angle_max=self.input.max_deflection)
 
-
-    #If the flap can attain the desired CLmax with the hinge located at the rear spar location, this attribute will
-    #move the hinge line aft until the design can just attain the required CLmax
     @Attribute
-    def newSpar(self):
-        if self.hldSize.noflap:
-            error('The wing can already attain the required CLmax by itself, no flaps are required')
-            return self.input.rear_spar, 0, 0
-        flap_count = 2
-        if self.hldSize.can_attain:
-            dcl45 = self.hldSize.dcl_flap[0]
-            dcl_target = self.hldSize.dcl_flap[1]
-            newspar = self.input.rear_spar
+    def newHinge(self): # This attribute evaluates all hinge locations between the trailing edge and the rear spar.
+                        # It then sets the hinge at the most aft position where the wing can attain the clmax required.
+        k = 0
+        hingeloc = np.zeros(50)
+        for loc in np.arange(0.99, self.input.rear_spar, -0.01):
+            hldsize = HLDsize(root_chord=self.input.root_chord,
+                              kink_position=self.input.kink_position,
+                              sweep=self.input.sweep_deg,
+                              dihedral=self.input.dihedral_deg,
+                              taper_inner=self.input.taper_inner,
+                              taper_outer=self.input.taper_outer,
+                              wing_span=self.input.wing_span,
+                              frontpar=self.input.front_spar,
+                              rearspar=loc,
+                              aileronloc=self.input.outer_flap_lim,
+                              fuselage_radius=self.input.fuselage_radius,
+                              flap_gap=self.input.flap_gap,
+                              airfoilCoordinates=self.input.airfoil_coordinates,
+                              clmaxclean=self.clMax[0],
+                              clmaxflapped=self.input.clmax,
+                              flaptype=self.input.flap_type,
+                              singleflap=False,
+                              angle_max=self.input.max_deflection)
+            if hldsize.noflap:
+                error('The wing can already attain the required CLmax by itself, no flaps are required')
+                return self.input.rear_spar, 0, 0
+            if hldsize.dcl_flap[0] >= hldsize.dcl_flap[1]:
+                hingeloc[k] = loc
+                k = k + 1
 
-            while dcl45 > dcl_target and newspar < 1.0:
-                newspar = newspar + 0.01
-                hldsize = HLDsize(root_chord=self.input.root_chord,
+        if hingeloc[0] == 0:
+            error('With the chosen flap type and rear spar location, the wing cannot attain the specified CLmax.'
+                  'Choose a different flap type, move the rear spar forward or increase the maximum deflection angle of the flap')
+
+        if hingeloc[0] > 0.95:  # If the flap is small, it is checked whether the inboard flap alone is enough to provide the required delta_cl
+            k1 = 0
+            hingeloc1 = np.zeros(50)
+            for loc in np.arange(0.99, self.input.rear_spar, -0.01):
+                hldsize1 = HLDsize(root_chord=self.input.root_chord,
                                   kink_position=self.input.kink_position,
                                   sweep=self.input.sweep_deg,
                                   dihedral=self.input.dihedral_deg,
@@ -182,7 +206,7 @@ class Model(Base):
                                   taper_outer=self.input.taper_outer,
                                   wing_span=self.input.wing_span,
                                   frontpar=self.input.front_spar,
-                                  rearspar=newspar,
+                                  rearspar=loc,
                                   aileronloc=self.input.outer_flap_lim,
                                   fuselage_radius=self.input.fuselage_radius,
                                   flap_gap=self.input.flap_gap,
@@ -190,91 +214,34 @@ class Model(Base):
                                   clmaxclean=self.clMax[0],
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
-                                  singleflap=False,
+                                  singleflap=True,
                                   angle_max=self.input.max_deflection)
-                dcl45 = hldsize.dcl_flap[0]
-                dcl_target = hldsize.dcl_flap[1]
-            flaparea = self.hldSize.sf1*(1-newspar+0.01)
+                if hldsize1.dcl_flap[0] >= hldsize1.dcl_flap[1]:
+                    hingeloc1[k1] = loc
+                    k1 = k1 + 1
+            flapcount = 1
+            flaparea = (1-hingeloc1[0])*hldsize1.sf1
+            newhinge = hingeloc1[0]
+
         else:
-            newspar = self.input.rear_spar + 0.01
-            flaparea = self.hldSize.sf*(1-self.input.rear_spar)
-        newspar2 = newspar
-        # If the spar location is more than 0.95, the following code calculates if the inner flap is enough to attain
-        # the desired CLmax
+            flapcount = 2
+            flaparea = (1 - hingeloc[0]) * hldsize.sf
+            newhinge = hingeloc[0]
+        return round(newhinge, 2), flapcount, flaparea  # the function returns the hing position, the number of flaps on a wing and the total flap area
 
-        if newspar2 > 0.95:
-            newspar = self.input.rear_spar
-            hldsize1 = HLDsize(root_chord=self.input.root_chord,
-                               kink_position=self.input.kink_position,
-                               sweep=self.input.sweep_deg,
-                               dihedral=self.input.dihedral_deg,
-                               taper_inner=self.input.taper_inner,
-                               taper_outer=self.input.taper_outer,
-                               wing_span=self.input.wing_span,
-                               frontpar=self.input.front_spar,
-                               rearspar=newspar,
-                               aileronloc=self.input.outer_flap_lim,
-                               fuselage_radius=self.input.fuselage_radius,
-                               flap_gap=self.input.flap_gap,
-                               airfoilCoordinates=self.input.airfoil_coordinates,
-                               clmaxclean=self.clMax[0],
-                               clmaxflapped=self.input.clmax,
-                               flaptype=self.input.flap_type,
-                               singleflap=True,
-                               angle_max=self.input.max_deflection)
-            dcl45_1 = hldsize1.dcl_flap[0]
-            dcl_target_1 = hldsize1.dcl_flap[1]
-            if dcl45_1 >= dcl_target_1:  # Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
-
-                dcl45 = self.hldSize.dcl_flap[0]
-                dcl_target = self.hldSize.dcl_flap[1]
-                while dcl45 > dcl_target and newspar < 1.0:  # Calculating the hinge location of the flap if only the inner flap is used.
-                    newspar = newspar + 0.01
-                    hldsize2 = HLDsize(root_chord=self.input.root_chord,
-                                      kink_position=self.input.kink_position,
-                                      sweep=self.input.sweep_deg,
-                                      dihedral=self.input.dihedral_deg,
-                                      taper_inner=self.input.taper_inner,
-                                      taper_outer=self.input.taper_outer,
-                                      wing_span=self.input.wing_span,
-                                      frontpar=self.input.front_spar,
-                                      rearspar=newspar,
-                                      aileronloc=self.input.outer_flap_lim,
-                                      fuselage_radius=self.input.fuselage_radius,
-                                      flap_gap=self.input.flap_gap,
-                                      airfoilCoordinates=self.input.airfoil_coordinates,
-                                      clmaxclean=self.clMax[0],
-                                      clmaxflapped=self.input.clmax,
-                                      flaptype=self.input.flap_type,
-                                      singleflap=True,
-                                      angle_max=self.input.max_deflection)
-                    dcl45 = hldsize2.dcl_flap[0]
-                    dcl_target = hldsize2.dcl_flap[1]
-                flap_count = 1
-                flaparea = hldsize2.sf * (1 - newspar + 0.01)
-            else:
-                newspar = newspar2
-                flaparea = hldsize.sf*(1-newspar2+0.01)
-
-            if newspar > 0.99:
-                #flap_count = 0
-                error("The size of the flap might be too small to justify its use. "
-                      "Consider a small increase in wing area instead.")
-
-        return newspar - 0.01, flap_count, flaparea
 
     # Results of the HLD sizing are given by the three attributes bellow:
     @Attribute
     def flapHingeLocation(self):
-        return self.newSpar[0]
+        return self.newHinge[0]
 
     @Attribute
     def flapCount(self):
-        return self.newSpar[1]
+        return self.newHinge[1]
 
     @Attribute
     def flapDeflection(self):
-        return self.hldSize.angle_max
+        return self.input.max_deflection
 
     # The model of the wing with flaps is constructed here
     @Part
@@ -333,7 +300,7 @@ class Model(Base):
     def exportPdf(self):
         write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
                   self.planform_file_name, self.flapDeflection, self.clMax[1], self.flapCount, self.cl_max_wing,
-                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.newSpar[2], self.pdfCoordinates)
+                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.newHinge[2], self.pdfCoordinates)
         return "Done"
 
     @Part
