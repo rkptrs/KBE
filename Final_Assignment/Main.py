@@ -27,7 +27,7 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    cl_max_wing = Input(1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
@@ -295,7 +295,8 @@ class Model(Base):
     @Attribute
     def exportPdf(self):
         write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
-                  self.planform_file_name, self.flapDeflection)
+                  self.planform_file_name, self.flapDeflection, self.clMax[1], self.flapCount, self.cl_max_wing,
+                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.hldSize.area1, self.hldSize.area2)
         return "Done"
 
     @Part
