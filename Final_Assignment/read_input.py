@@ -48,6 +48,7 @@ class get_input:                # class for reading planform input file. returns
         self.fuselage_radius = get_line(f)
         self.clmax = get_line(f)
         self.twist = get_line(f)
+        self.max_deflection = get_line(f)
         self.speed = get_line(f)
         self.airfoil_name = get_line(f, number=False)
         self.flap_type = get_line(f, number=False)

@@ -12,6 +12,7 @@ outer_flap_limit = 0.95	# y/(b/2)
 fuselage_radius = 5
 clmax = 4.0
 twist = 10
+max_deflection = 45 # in degrees
 speed = 200
 airfoil_name = ex1
 flap_type = None

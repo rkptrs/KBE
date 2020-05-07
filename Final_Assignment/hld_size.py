@@ -30,7 +30,7 @@ class HLDsize(GeomBase):
     trimfactor = Input(1.1)
     flaptype = Input()
     singleflap = Input()
-    angle_max = Input(45) # The maximum deflection angle is set to 45 by default. This is a very common maximum deflection angle
+    angle_max = Input() # The maximum deflection angle is set to 45 by default. This is a very common maximum deflection angle
                           # To limit the amount of user inputs, this value was set, but it can be changed by the user.
 
     @Attribute

@@ -12,6 +12,7 @@ outer_flap_limit = 0.6	# y/(b/2)
 fuselage_radius = 1.5	# in meters
 clmax = 1.8 # CLmax the user wants to attain with flaps deployed.
 twist = 0 # in degrees
+max_deflection = 30 # in degrees
 speed = 100 # in meters per second
 airfoil_name = ex1	# file in airfoils folder
 flap_type = Slotted	# select out of Fowler, Plain, Slotted

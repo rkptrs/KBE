@@ -26,8 +26,8 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1.1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('RJ_100')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
@@ -155,7 +155,8 @@ class Model(Base):
                        clmaxclean=self.clMax[0],
                        clmaxflapped=self.input.clmax,
                        flaptype=self.input.flap_type,
-                       singleflap=False, hidden=True)
+                       singleflap=False, hidden=True,
+                       angle_max=self.input.max_deflection)
 
 
     #If the flap can attain the desired CLmax with the hinge located at the rear spar location, this attribute will
@@ -189,7 +190,8 @@ class Model(Base):
                                   clmaxclean=self.clMax[0],
                                   clmaxflapped=self.input.clmax,
                                   flaptype=self.input.flap_type,
-                                  singleflap=False)
+                                  singleflap=False,
+                                  angle_max=self.input.max_deflection)
                 dcl45 = hldsize.dcl_flap[0]
                 dcl_target = hldsize.dcl_flap[1]
             flaparea = self.hldSize.sf1*(1-newspar+0.01)
@@ -218,7 +220,8 @@ class Model(Base):
                                clmaxclean=self.clMax[0],
                                clmaxflapped=self.input.clmax,
                                flaptype=self.input.flap_type,
-                               singleflap=True)
+                               singleflap=True,
+                               angle_max=self.input.max_deflection)
             dcl45_1 = hldsize1.dcl_flap[0]
             dcl_target_1 = hldsize1.dcl_flap[1]
             if dcl45_1 >= dcl_target_1:  # Checking if the inner flap with the maximum possible chord is enough to reach the required CLmax
@@ -243,7 +246,8 @@ class Model(Base):
                                       clmaxclean=self.clMax[0],
                                       clmaxflapped=self.input.clmax,
                                       flaptype=self.input.flap_type,
-                                      singleflap=True)
+                                      singleflap=True,
+                                      angle_max=self.input.max_deflection)
                     dcl45 = hldsize2.dcl_flap[0]
                     dcl_target = hldsize2.dcl_flap[1]
                 flap_count = 1
