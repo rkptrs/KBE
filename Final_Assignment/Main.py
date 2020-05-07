@@ -193,6 +193,7 @@ class Model(Base):
         if hingeloc[0] == 0:
             error('With the chosen flap type and rear spar location, the wing cannot attain the specified CLmax.'
                   'Choose a different flap type, move the rear spar forward or increase the maximum deflection angle of the flap')
+            return self.input.rear_spar, 2, 0
 
         if hingeloc[0] > 0.95:  # If the flap is small, it is checked whether the inboard flap alone is enough to provide the required delta_cl
             k1 = 0
