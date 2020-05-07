@@ -294,13 +294,39 @@ class Model(Base):
                              quantify=len(self.wingParts) - 1, color=self.input.colour, mesh_deflection=v.md,           # -1 is to not include the fuselage
                              hidden=self.hideLeftWing)
 
+    @Part(parse=False)
+    def pdfWingSection(self):
+        plane = Plane(reference=Point(0, self.input.fuselage_radius/2+self.input.kink_position/2, 0),
+                      normal=Vector(0, 1, 0))
+        airfoil = IntersectedShapes(self.wing.sectionFlap1.mainWing, plane, color="red")
+        if self.flapCount > 0:
+            flap = IntersectedShapes(self.wing.sectionFlap1.flap, plane, color="red")
+            return airfoil, flap
+        else:
+            return airfoil
+
+    @Attribute
+    def pdfCoordinates(self):
+        coordinates = []
+        if self.flapCount >0:
+            sections = self.pdfWingSection[0].edges + self.pdfWingSection[1].edges
+        else:
+            sections = self.pdfWingSection.edges
+        for ed in sections:
+            points = ed.equispaced_points(500)
+            coords = []
+            for p in points:
+                coords.append((p[0], p[2]))
+            coordinates.append(coords)
+        return coordinates
+
     # This is an attibute that when evaluated exports a pdf. this means that the user can export pdf when desired and
     # not after each time something is changed. sort of a "save" function
     @Attribute
     def exportPdf(self):
         write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
                   self.planform_file_name, self.flapDeflection, self.clMax[1], self.flapCount, self.cl_max_wing,
-                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.hldSize.area1, self.hldSize.area2)
+                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.hldSize.area1, self.hldSize.area2, self.pdfCoordinates)
         return "Done"
 
     @Part
