@@ -1,3 +1,7 @@
+#This file contains the functions that have been derived from the graphs in the Roskam book.
+#They are used in the HldSize class.
+
+
 def K(cfc,flaptype):
     if flaptype == 1:
         K = 0.9965977514013269 - 0.2361378504651011*cfc - 9.574408734711309*cfc**2 + 154.13435271017116*cfc**3 - 1361.575512976779*cfc**4 + 5986.884155081507*cfc**5 - 14771.660609524113*cfc**6 + 21647.67114925106*cfc**7 - 18775.583782210037*cfc**8 + 8921.216331880963*cfc**9 - 1792.2761193962122*cfc**10
