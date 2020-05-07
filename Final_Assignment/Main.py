@@ -26,8 +26,8 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('planform_max_values')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(1.1)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file

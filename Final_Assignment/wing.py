@@ -97,7 +97,7 @@ class Wing(Base):
         return Wing_section(chords=[self.kinkChord, self.chord(self.input.kink_position + self.input.flap_gap)],
                             points=[self.le_pos(self.input.kink_position),
                                     self.le_pos(self.input.kink_position + self.input.flap_gap)],
-                            airfoil_coordinates=self.input.airfoil_coordinates)
+                            airfoil_coordinates=self.input.airfoil_coordinates, hidden=self.input.flap_gap==0)
 
     @Part                               # outer flap section
     def sectionFlap2(self):
