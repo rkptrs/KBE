@@ -26,7 +26,7 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('test_planform1')        # name of input file located in planforms folder, without ".txt"
+    planform_file_name = Input('max')        # name of input file located in planforms folder, without ".txt"
     cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                          # Set to true to only display the right wing
 
@@ -192,7 +192,7 @@ class Model(Base):
                                   singleflap=False)
                 dcl45 = hldsize.dcl_flap[0]
                 dcl_target = hldsize.dcl_flap[1]
-            flaparea = hldsize.sf*(1-newspar+0.01)
+            flaparea = self.hldSize.sf1*(1-newspar+0.01)
         else:
             newspar = self.input.rear_spar + 0.01
             flaparea = self.hldSize.sf*(1-self.input.rear_spar)
