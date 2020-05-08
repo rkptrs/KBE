@@ -22,6 +22,7 @@ If a new planform file is created, its name should be inserted in the Main.py fi
     This was done to be able to quickly access the GUI without having to wait for the analyses. Setting this option to 'None'
     will make the app use the Xfoil and AVL analyses to determine the cl_max of the clean wing.
     The third option situated in the Model class is to hide the left wing, which is a mirror of the right wing.
+    The last option presented is the position of the wing, which can be low, mid or high.
 
 Lastly, some of the input parameters for hld design have been set to defaults. These include the take-off/landing
     conditions and the maximum deflection angle of the flaps. The air density has been set to 1.225 kg/m^3 and the maximum
