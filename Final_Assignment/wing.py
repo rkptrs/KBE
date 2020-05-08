@@ -23,6 +23,7 @@ class Wing(Base):
     flap_hinge_location = Input(settable=False)
     input = Input(settable=False)
     flap_count = Input(settable=False)
+    wingMounting = Input(settable=False)
 
     # Additional parameters are computed here from the inputs
     @Attribute              # wing sweep is converted from deg to radians
@@ -117,17 +118,28 @@ class Wing(Base):
 
     @Part                               # fuselage is defined here because the fuselage radius is passed to this class
     def fuselage(self):
-        return Fuselage(radius=self.input.fuselage_radius, root_chord=self.input.root_chord, hidden=False)
+        return Fuselage(radius=self.input.fuselage_radius, root_chord=self.input.root_chord,
+                        hidden=False, wingMounting=self.wingMounting)
 
 # the only purpose of the fuselage is to visualize what the wing with it will look like, as the inner flap limit is set to be the fuselage radius
 class Fuselage(Base):
     radius = Input(settable=False)
     root_chord = Input(settable=False)
+    wingMounting = Input(settable=False)
+
+    @Attribute
+    def yPosition(self):
+        if self.wingMounting == "High":
+            return -self.radius
+        elif self.wingMounting == "Low":
+            return self.radius
+        else:
+            return 0
 
     @Part(parse=False)
     def cylinder(self):
         surf = Cylinder(radius=self.radius,
                                   height=self.root_chord * 3,
                                   position=rotate(XOY, "y", np.pi / 2))
-        return TranslatedShape(surf, Vector(-self.root_chord, 0, self.radius))
+        return TranslatedShape(surf, Vector(-self.root_chord, 0, self.yPosition))
 

@@ -27,9 +27,9 @@ import numpy as np
 
 class Model(Base):
     planform_file_name = Input('RJ_100')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
-    hideLeftWing = Input(False)  # Set to true to only display the right wing
-
+    cl_max_wing = Input(1.2)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    hideLeftWing = Input(False)                  # Set to true to only display the right wing
+    wingMounting = Input("High")                  # Choose between a "High", "Low" or a "Mid" wing mounting
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
     def input(self):
@@ -249,8 +249,8 @@ class Model(Base):
     # The model of the wing with flaps is constructed here
     @Part
     def wing(self):
-        return Wing(input=self.input, flap_hinge_location=self.flapHingeLocation,
-                    color=self.input.colour, flap_deflection=self.flapDeflection, flap_count=self.flapCount)
+        return Wing(input=self.input, flap_hinge_location=self.flapHingeLocation, color=self.input.colour,
+                    flap_deflection=self.flapDeflection, flap_count=self.flapCount, wingMounting=self.wingMounting)
 
     # all the parts of the wing are gathered in a list so that they can be mirrored one by one
     @Attribute
