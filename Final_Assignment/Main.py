@@ -2,15 +2,15 @@ from parapy.exchange import STEPWriter
 from parapy.geom import *
 from parapy.core import *
 from parapy.gui import display
-from wing import Wing
-from read_input import get_input, check_input, error
-from hld_size import HLDsize
-from avl_wing import Avl_Wing
-from avl_wing import Avl_analysis
-from xfoil_analysis import XfoilAnalysis
-from bar import bar
-from write_pdf import write_pdf
-from functions import v
+from wing_sections.wing import Wing
+from utilities.read_input import get_input, check_input, error
+from hld_sizing.hld_size import HLDsize
+from hld_sizing.avl_wing import Avl_Wing
+from hld_sizing.avl_wing import Avl_analysis
+from hld_sizing.xfoil_analysis import XfoilAnalysis
+from utilities.bar import bar
+from utilities.write_pdf import write_pdf
+from utilities.functions import v
 import numpy as np
 
 # This is the base class of the entire model and uses the following structure:
@@ -26,10 +26,10 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('RJ_100')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1.2)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('example_slotted')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                  # Set to true to only display the right wing
-    wingMounting = Input("High")                  # Choose between a "High", "Low" or a "Mid" wing mounting
+    wingMounting = Input("Low")                  # Choose between a "High", "Low" or a "Mid" wing mounting
 
     @Attribute                                          # this attribute is an instance of the get_input class and contains all inputs read from file
     def input(self):
