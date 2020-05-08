@@ -67,7 +67,7 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
     values = []
     for i in range(len(names)):                             # use the attribute names to get all the variables in a list
         values.append(inp.__getattribute__(names[i]))
-    units = ["m", "m", "", "", "m", "m", "deg", "deg", "x/c", "x/c", "y/b", "m", "", "deg", "m/s", "", ""]
+    units = ["m", "m", "", "", "m", "m", "deg", "deg", "x/c", "x/c", "y/b", "m", "", "deg", "m/s", "", "", ""]
     write_list(pdf, "Input parameters:", (20, list_y), names, values, units)        # call the function defined above
 
     # Make output list
