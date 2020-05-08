@@ -40,3 +40,16 @@ Some notes for the airfoil files:
 	    it is however recommended to have the LE strictly at (0, 0) and the TE at (1, 0).
 	    Do not include any header in the file, blank lines are fine anywhere, use comma space or tab
 	    for separating the x and y coordinates.
+
+
+-- Outputs --
+
+The application provides several outputs, either automatically or if asked for.
+
+The first output is of course the geometry in the GUI. This is provided whenever the application is run.
+
+Secondly, there is the PDF output. A pdf containing the input parameters, output values and a cross section of the
+    flapped wing can be put out by evaluating the exportPdf attribute in the GUI.
+
+Finally, a STEP file can be output, which can be used to import the geometry of the wing in a CAD program such as CATIA.
+    This STEP file is created by double clicking the exportSTEP part in the three.
