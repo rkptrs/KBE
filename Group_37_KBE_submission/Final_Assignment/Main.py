@@ -26,8 +26,8 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('example_cant_attain')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(1.6)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('example_noflaps')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                  # Set to true to only display the right wing
     wingMounting = Input("Low")                  # Choose between a "High", "Low" or a "Mid" wing mounting
 
