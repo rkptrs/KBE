@@ -26,8 +26,8 @@ import numpy as np
 
 
 class Model(Base):
-    planform_file_name = Input('example_slotted')        # name of input file located in planforms folder, without ".txt"
-    cl_max_wing = Input(None)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
+    planform_file_name = Input('example_cant_attain')        # name of input file located in planforms folder, without ".txt"
+    cl_max_wing = Input(1.6)                            # Set this to None to compute using internal analysis or specify a maximum lift coefficient of the wing if known
     hideLeftWing = Input(False)                  # Set to true to only display the right wing
     wingMounting = Input("Low")                  # Choose between a "High", "Low" or a "Mid" wing mounting
 
@@ -185,7 +185,7 @@ class Model(Base):
                               angle_max=self.input.max_deflection)
             if hldsize.noflap:
                 error('The wing can already attain the required CLmax by itself, no flaps are required')
-                return self.input.rear_spar, 0, 0
+                return self.input.rear_spar, 0, 0, False
             if hldsize.dcl_flap[0] >= hldsize.dcl_flap[1]:
                 hingeloc[k] = loc
                 k = k + 1
@@ -193,7 +193,7 @@ class Model(Base):
         if hingeloc[0] == 0:
             error('With the chosen flap type and rear spar location, the wing cannot attain the specified CLmax.'
                   'Choose a different flap type, move the rear spar forward or increase the maximum deflection angle of the flap')
-            return self.input.rear_spar, 2, 0
+            return self.input.rear_spar, 2, 0, True
 
         if hingeloc[
             0] > 0.95:  # If the flap is small, it is checked whether the inboard flap alone is enough to provide the required delta_cl
@@ -222,7 +222,7 @@ class Model(Base):
                     hingeloc1[k1] = loc
                     k1 = k1 + 1
             if hingeloc1[0] == 0:
-                return hingeloc[0], 2, (1 - hingeloc[0]) * hldsize.sf
+                return hingeloc[0], 2, (1 - hingeloc[0]) * hldsize.sf, False
             flapcount = 1
             flaparea = (1 - hingeloc1[0]) * hldsize1.sf1
             newhinge = hingeloc1[0]
@@ -231,7 +231,7 @@ class Model(Base):
             flapcount = 2
             flaparea = (1 - hingeloc[0]) * hldsize.sf
             newhinge = hingeloc[0]
-        return round(newhinge, 2), flapcount, flaparea  # the function returns the hing position, the number of flaps on a wing and the total flap area
+        return round(newhinge, 2), flapcount, flaparea, False  # the function returns the hing position, the number of flaps on a wing and the total flap area
 
     # Results of the HLD sizing are given by the three attributes bellow:
     @Attribute
@@ -303,7 +303,7 @@ class Model(Base):
     def exportPdf(self):
         write_pdf(self.input, self.clMax[0], self.input.clmax - self.clMax[0], self.flapHingeLocation,
                   self.planform_file_name, self.flapDeflection, self.clMax[1], self.flapCount, self.cl_max_wing,
-                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.newHinge[2], self.pdfCoordinates)
+                  self.mach, self.wing.kinkChord, self.wing.tipChord, self.newHinge[2], self.pdfCoordinates, self.newHinge[3])
         return "Done"
 
     @Part

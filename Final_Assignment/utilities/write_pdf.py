@@ -24,7 +24,7 @@ def write_list(pdf, title, position, names, values, units):
 
 
 def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_file_name, flap_deflection, alpha_stall,
-              flap_count, cl_input, mach, kink_chord, tip_chord, area, coordinates):
+              flap_count, cl_input, mach, kink_chord, tip_chord, area, coordinates, cant_attain):
     pdf = FPDF()        # create a PDF and add a page
     pdf.add_page()
 
@@ -53,13 +53,27 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
         pdf.set_text_color(255, 0, 0)
         txt = "The HLDs were sized using the CL_max of the clean wing provided by the user in the main file."
         txt2 = "No external analysis was carried out."
+
+    if cant_attain:
+        pdf.set_text_color(255, 0, 0)
+        txt3 = "With the given inputs, no valid design could be created to attain the required CL_max"
+        yloc = 76
+        y0loc = 10
+    else:
+        txt3 = " "
+        yloc = 70
+        y0loc = 0
     pdf.set_xy(20, 52)
     pdf.cell(200, 6, txt=txt, ln=1, align='L')
     pdf.set_xy(20, 58)
     pdf.cell(200, 6, txt=txt2, ln=1, align='L')
+    pdf.set_xy(20, 64)
+    pdf.set_font("Arial", "b", size=12)
+    pdf.cell(200, 6, txt=txt3, ln=1, align='L')
+    pdf.set_font("Arial", size=12)
     pdf.set_text_color(0, 0, 0)
 
-    list_y = 70
+    list_y = yloc
 
     # Make input list
     names = list(inp.__dict__.keys())               # get all the input parameter attribute names
@@ -84,7 +98,7 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
     write_list(pdf, "Other parameters", (110, 140), names, values, units)
 
     # Write airfoil below
-    pdf.set_xy(20, 190)
+    pdf.set_xy(20, 200)
     pdf.set_font("Arial", "b", size=12)
     name = "Cross section of airfoil with the flap system:"
     pdf.cell(200, 6, txt=name, ln=1, align='L')
@@ -106,7 +120,7 @@ def write_pdf(inp, cl_max_airfoil, Delta_cl_max, flap_hinge_location, planform_f
             y.append((section[i][1] - ys)/chord)
 
         for i in range(len(x)-1):
-            x0, y0 = 30, 210
+            x0, y0 = 30, 210+y0loc
             factor = 150                            # size of airfoil in pixels
             x1 = x[i]*factor
             y1 = y[i]*factor
